@@ -34,7 +34,8 @@ class grb:
         sigma=5,
         offset=0.0,
     ):
-
+        """Constructor method
+        """
         # initialize parameters dictionary
         self.params = {
             "num_runs": num_runs,

@@ -34,6 +34,7 @@ class grb:
 
     def __init__(
             self,
+            input_model,
             num_jobs=1,
             total_time=None,
             delta_t=1.,
@@ -52,6 +53,8 @@ class grb:
     ):
         """Constructor method
         """
+
+        self.input_model = input_model
 
         # initialize parameters dictionary
         self.params = {
@@ -73,18 +76,24 @@ class grb:
 
         }
 
+        # initialize results, outfile and log dicts
+        self.outputs = {}
+        self.logs = {}
+        self.results = {}
+
         # check inputs
         self._check_inputs()
 
         # get time steps
         self._get_time_steps()
 
+
     def _check_inputs(self):
         """Check the validity of the inputs upon class initialization"""
 
         # check sensitivity type is either integral or differential
         sens_type = self.params["sens_type"].lower()
-        if sens_type != "integral" or sens_type != "differential":
+        if sens_type != "integral" and sens_type != "differential":
             raise AttributeError("Parameter `sens_type` must be"
                                  " either 'Integral' or 'Differential'.")
         # capitalize sens_type
@@ -141,6 +150,11 @@ class grb:
         outfile = f"./outputs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
         logfile = f"./logs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
 
+        # load input model
+        models = gammalib.GModels(self.input_model)
+        models.save(self.input_model)
+        sen["inmodel"] = self.input_model
+
         sen["duration"] = duration
         sen["outfile"] = outfile
         sen["logfile"] = logfile
@@ -171,9 +185,14 @@ class grb:
         self.logs[duration] = logfile
         self.results[duration] = results
 
+    def execute(self):
+
+        for duration in self.times:
+            self._calculate_sensitivity(duration=duration)
+            print(f"Done with duration={duration}s")
 
 
 if __name__ == "__main__":
-    my_grb = grb(init_time=0, total_time=25, delta_t=0.5, num_jobs=None)
+    my_grb = grb(init_time=0, total_time=4, delta_t=1, num_jobs=None)
 
     print("done")

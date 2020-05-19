@@ -157,6 +157,19 @@ class grb:
         sen["binsz"] = self.params["binsz"]
         sen["offset"] = self.params["offset"]
 
+        # run cssens
+        sen.execute()
+
+        # import results into a dataframe
+        results = pd.read_csv(outfile)
+
+        # add duration as a column
+        results['duration'] = [duration]
+
+        # add outputs to dicts
+        self.outputs[duration] = outfile
+        self.logs[duration] = logfile
+        self.results[duration] = results
 
 
 

@@ -1,5 +1,10 @@
+import os
 import numpy as np
+import pandas as pd
 
+import gammalib
+import ctools
+import cscripts
 
 class grb:
     """This is a class to store all the information about a GRB that is to be run
@@ -10,10 +15,10 @@ class grb:
     :type total_time: (float, NoneType), optional
     :param delta_t: Duration of time steps (s) over which to iterate sims, defaults to 1
     :type delta_t: (float, NoneType), optional
-    :param lower_limit: lower energy limit in TeV, defaults to 0.02 TeV
-    :type lower_limit: float, optional
-    :param upper_limit: upper energy limit in Tev, defaults to 10 TeV
-    :type upper_limit: float, optional
+    :param emin: lower energy limit in TeV, defaults to 0.02 TeV
+    :type emin: float, optional
+    :param emax: upper energy limit in Tev, defaults to 10 TeV
+    :type emax: float, optional
     :param bins: number of energy bins, defaults to 1
     :type bins: int, optional
     :param irf: input ctools IRF, defaults to "North_0.5h"
@@ -24,6 +29,7 @@ class grb:
     :type sigma: float, optional
     :param offset: offset from the pointing coordinates
     :type offset: float, optional
+    TODO: add rest of the parameters
     """
 
     def __init__(
@@ -31,13 +37,18 @@ class grb:
             num_jobs=1,
             total_time=None,
             delta_t=1.,
-            lower_limit=0.02,
-            upper_limit=10,
+            emin=0.02,
+            emax=10,
             bins=1,
             irf="North_0.5h",
             init_time=1.,
             sigma=5.,
             offset=0.,
+            binsz=0.2,
+            sens_type="Integral",
+            rad=2.25,
+            caldb="prod2",
+            src_name="GRB",
     ):
         """Constructor method
         """
@@ -47,13 +58,19 @@ class grb:
             "num_jobs": num_jobs,
             "total_time": total_time,
             "delta_t": delta_t,
-            "lower_limit": lower_limit,
-            "upper_limit": upper_limit,
+            "emin": emin,
+            "emax": emax,
             "bins": bins,
             "irf": irf,
             "init_time": init_time,
             "sigma": sigma,
             "offset": offset,
+            "binsz" : binsz,
+            "sens_type" : sens_type,
+            "rad" : rad,
+            "caldb" : caldb,
+            "src_name" : src_name,
+
         }
 
         # check inputs
@@ -64,6 +81,14 @@ class grb:
 
     def _check_inputs(self):
         """Check the validity of the inputs upon class initialization"""
+
+        # check sensitivity type is either integral or differential
+        sens_type = self.params["sens_type"].lower()
+        if sens_type != "integral" or sens_type != "differential":
+            raise AttributeError("Parameter `sens_type` must be"
+                                 " either 'Integral' or 'Differential'.")
+        # capitalize sens_type
+        self.params["sens_type"] = sens_type.capitalize()
 
         # check delta_t, num_jobs, total time
         number_of_params = 0
@@ -103,6 +128,36 @@ class grb:
               f"with {self.params['num_jobs']} time steps of dt={time_step}s each")
 
         self.times = times
+
+    def _calculate_sensitivity(self, duration):
+        """Run the `cssens` ctools module based on the given input"""
+
+        print(f"Running `cssens` for {self.params['src_name']} for a duration of {duration}s")
+
+        # create cssens object
+        sen = cscripts.cssens()
+
+        # calculate outfile and logfile names
+        outfile = f"./outputs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
+        logfile = f"./logs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
+
+        sen["duration"] = duration
+        sen["outfile"] = outfile
+        sen["logfile"] = logfile
+
+        sen["srcname"] = self.params["src_name"]
+        sen["caldb"] = self.params["caldb"]
+        sen["irf"] = self.params["irf"]
+        sen["rad"] = self.params["rad"]
+        sen["emin"] = self.params["emin"]
+        sen["emax"] = self.params["emax"]
+        sen["type"] = self.params["sens_type"]
+        sen["sigma"] = self.params["sigma"]
+        sen["bins"] = self.params["bins"]
+        sen["binsz"] = self.params["binsz"]
+        sen["offset"] = self.params["offset"]
+
+
 
 
 if __name__ == "__main__":

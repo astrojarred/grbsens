@@ -3,35 +3,11 @@ import numpy as np
 import pandas as pd
 
 import gammalib
-import ctools
 import cscripts
 
 
 class grb:
-    """This is a class to store all the information about a GRB that is to be run
-
-    :param num_jobs: Total number of jobs, defaults to 1
-    :type num_jobs: (int, NoneType), optional
-    :param total_time: Total duration (s) over which to run sims, defaults to None
-    :type total_time: (float, NoneType), optional
-    :param delta_t: Duration of time steps (s) over which to iterate sims, defaults to 1
-    :type delta_t: (float, NoneType), optional
-    :param emin: lower energy limit in TeV, defaults to 0.02 TeV
-    :type emin: float, optional
-    :param emax: upper energy limit in Tev, defaults to 10 TeV
-    :type emax: float, optional
-    :param bins: number of energy bins, defaults to 1
-    :type bins: int, optional
-    :param irf: input ctools IRF, defaults to "North_0.5h"
-    :type irf, string, optional
-    :param init_time: initial observation time, defaults to 1
-    :type init_time: float, optional
-    :param sigma: significance, defaults to 5 sigma
-    :type sigma: float, optional
-    :param offset: offset from the pointing coordinates
-    :type offset: float, optional
-    TODO: add rest of the parameters
-    """
+    """This is a class to store all the information about a GRB that is to be run."""
 
     def __init__(
             self,
@@ -52,8 +28,6 @@ class grb:
             caldb="prod2",
             src_name="GRB",
     ):
-        """Constructor method
-        """
 
         self.input_model = input_model
 
@@ -211,7 +185,7 @@ class grb:
 
         if filepath is None:
             cwd = os.path.abspath('')  # current working directory
-            start, stop = min(self.times), max(self.times) # get start and stop times
+            start, stop = min(self.times), max(self.times)  # get start and stop times
             filepath = f"{cwd}/outputs/sensi-{self.params['sigma']}sigma_t{start}s-t{stop}s_irf-{self.params['irf']}.csv"
 
         # save as csv

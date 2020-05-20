@@ -234,6 +234,6 @@ class grb:
 
 
 if __name__ == "__main__":
-    my_grb = grb(init_time=0, total_time=4, delta_t=1, num_jobs=None)
+    my_grb = grb(input_model="grb.xml", init_time=0, total_time=4, delta_t=1, num_jobs=None)
 
     print("done")

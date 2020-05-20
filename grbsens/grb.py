@@ -77,15 +77,9 @@ class grb:
 
         }
 
-        """initialize results dict:
-        results = {
-            index = {
-                job number  : xxx
-                output file : yyy.txt
-                log file    : zzz.log
-            }
-        """
+        # initialize results dictionary and output
         self.results = {}
+        self.output = None
 
         # check inputs
         self._check_inputs()
@@ -156,18 +150,21 @@ class grb:
         sen = cscripts.cssens()
 
         # calculate outfile and logfile names
-        outfile = f"./outputs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
-        logfile = f"./logs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
+        cwd = os.path.abspath('')  # current working directory
+        outfile = f"{cwd}/outputs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
+        logfile = f"{cwd}/logs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
 
         # load input model
         models = gammalib.GModels(self.input_model)
         models.save(self.input_model)
         sen["inmodel"] = self.input_model
 
+        # set parameters that change each loop
         sen["duration"] = duration
         sen["outfile"] = outfile
         sen["logfile"] = logfile
 
+        # set global parameters
         sen["srcname"] = self.params["src_name"]
         sen["caldb"] = self.params["caldb"]
         sen["irf"] = self.params["irf"]
@@ -186,21 +183,42 @@ class grb:
         # import results into a dataframe
         results = pd.read_csv(outfile)
 
-        # add duration as a column
+        # add duration and job number as a column
         results['duration'] = [duration]
+        results['job_number'] = [job_number]
 
-        # add outputs to dicts
-        self.results[job_number] = dict(
-            duration=duration,
-            table=results,
-            log=logfile,
-        )
+        # add output and log filepaths as columns
+        results['output_file'] = [outfile]
+        results['log_file'] = [logfile]
 
-    def execute(self):
+        # add output pandas df to results dictionary
+        self.results[job_number] = results
+
+    def save_to_csv(self, filepath=None):
+        """Save results to a csv"""
+
+        if filepath is None:
+            cwd = os.path.abspath('')  # current working directory
+            start, stop = min(self.times), max(self.times) # get start and stop times
+            filepath = f"{cwd}/outputs/sensi-{self.params['sigma']}sigma_t{start}s-t{stop}s_irf-{self.params['irf']}.csv"
+
+        # save as csv
+        self.output.to_csv(filepath)
+        print(f"\nOutput written to {filepath}\n")
+
+    def execute(self, write_to_file=True, output_filepath=None):
+        """Run `cssens` once for each job"""
 
         for job_number, duration in enumerate(self.times):
             self._calculate_sensitivity(job_number=job_number, duration=duration)
             print(f"Done with duration={duration}s\n")
+
+        # concatenate results
+        self.output = pd.concat(self.results, ignore_index=True).set_index("job_number")
+
+        # write to csv file
+        if write_to_file:
+            self.save_to_csv(filepath=output_filepath)
 
 
 if __name__ == "__main__":

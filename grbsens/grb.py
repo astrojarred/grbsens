@@ -87,6 +87,18 @@ class grb:
         # get time steps
         self._get_time_steps()
 
+    def __len__(self):
+        """Returns number of time steps"""
+        return len(self.times)
+
+    def __getitem__(self, item):
+        """Return parameter"""
+        return self.params[item]
+
+    def __setitem__(self, key, value):
+        """Set a parameter manually"""
+        self.params[key] = value
+
     def _check_inputs(self):
         """Check the validity of the inputs upon class initialization"""
 

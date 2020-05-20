@@ -39,7 +39,7 @@ class grb:
             num_jobs=1,
             total_time=None,
             delta_t=1.,
-            emin=0.02,
+            emin=0.03,
             emax=10,
             bins=1,
             irf="North_0.5h",

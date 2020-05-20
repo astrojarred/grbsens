@@ -1,10 +1,10 @@
-import os
 import numpy as np
 import pandas as pd
 
 import gammalib
 import ctools
 import cscripts
+
 
 class grb:
     """This is a class to store all the information about a GRB that is to be run
@@ -68,17 +68,22 @@ class grb:
             "init_time": init_time,
             "sigma": sigma,
             "offset": offset,
-            "binsz" : binsz,
-            "sens_type" : sens_type,
-            "rad" : rad,
-            "caldb" : caldb,
-            "src_name" : src_name,
+            "binsz": binsz,
+            "sens_type": sens_type,
+            "rad": rad,
+            "caldb": caldb,
+            "src_name": src_name,
 
         }
 
-        # initialize results, outfile and log dicts
-        self.outputs = {}
-        self.logs = {}
+        """initialize results dict:
+        results = {
+            index = {
+                job number  : xxx
+                output file : yyy.txt
+                log file    : zzz.log
+            }
+        """
         self.results = {}
 
         # check inputs
@@ -86,7 +91,6 @@ class grb:
 
         # get time steps
         self._get_time_steps()
-
 
     def _check_inputs(self):
         """Check the validity of the inputs upon class initialization"""
@@ -129,7 +133,7 @@ class grb:
         time_step = self.params["delta_t"]
         times = np.arange(start_time + time_step, stop_time + time_step, time_step)
 
-        # add stop time to params
+        # add stop time to params2
         self.params["stop_time"] = stop_time
 
         print(f"Running from t0={start_time}s to t1={stop_time}s "
@@ -138,10 +142,14 @@ class grb:
 
         self.times = times
 
-    def _calculate_sensitivity(self, duration):
+    def _calculate_sensitivity(self, job_number, duration):
         """Run the `cssens` ctools module based on the given input"""
 
-        print(f"Running `cssens` for {self.params['src_name']} for a duration of {duration}s")
+        # set duration to a float
+        duration = float(duration)
+
+        print(f"Running `cssens` job #{job_number} for "
+              f"{self.params['src_name']} for a duration of {duration}s")
 
         # create cssens object
         sen = cscripts.cssens()
@@ -181,15 +189,17 @@ class grb:
         results['duration'] = [duration]
 
         # add outputs to dicts
-        self.outputs[duration] = outfile
-        self.logs[duration] = logfile
-        self.results[duration] = results
+        self.results[job_number] = dict(
+            duration=duration,
+            table=results,
+            log=logfile,
+        )
 
     def execute(self):
 
-        for duration in self.times:
-            self._calculate_sensitivity(duration=duration)
-            print(f"Done with duration={duration}s")
+        for job_number, duration in enumerate(self.times):
+            self._calculate_sensitivity(job_number=job_number, duration=duration)
+            print(f"Done with duration={duration}s\n")
 
 
 if __name__ == "__main__":

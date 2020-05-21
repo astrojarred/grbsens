@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+import numbers
 
 import gammalib
 import cscripts
@@ -82,25 +83,68 @@ class grb:
         # capitalize sens_type
         self.params["sens_type"] = sens_type.capitalize()
 
-        # calculate the number of jobs parameter
-        self.params["num_jobs"] = int(self.params["total_time"] / self.params["delta_t"])
-
     def _get_time_steps(self):
         """Create the time steps for the class."""
 
-        start_time = self.params["init_time"]
-        stop_time = self.params["init_time"] + self.params["total_time"]
-        time_step = self.params["delta_t"]
-        times = np.arange(start_time + time_step, stop_time + time_step, time_step)
+        if isinstance(self.params["delta_t"], numbers.Number):
 
-        # add stop time to params2
-        self.params["stop_time"] = stop_time
+            start_time = self.params["init_time"]
+            stop_time = self.params["init_time"] + self.params["total_time"]
+            time_step = self.params["delta_t"]
+            times = np.arange(start_time + time_step, stop_time + time_step, time_step)
 
-        print(f"Running from t0={start_time}s to t1={stop_time}s "
-              f"for a total duration of t={self.params['total_time']} "
-              f"with {self.params['num_jobs']} time steps of dt={time_step}s each")
+            # add stop time to params2
+            self.params["stop_time"] = stop_time
 
-        self.times = times
+            print(f"Running from t0={start_time}s to t1={stop_time}s "
+                  f"for a total duration of t={self.params['total_time']} "
+                  f"with {self.params['num_jobs']} time steps of dt={time_step}s each")
+
+            self.times = times
+
+        elif self.params["delta_t"] == "custom":
+            # create time frames dict
+            self.time_frames = {}
+
+            print("Add time frames with custom time steps using "
+                  "`grb.add_timeframe(start, stop, time_step)` in seconds.")
+
+        else:
+            raise AttributeError("Choose a either a single value for `delta_t` or select 'custom' to"
+                                 "add custom time frames with unique time steps.")
+
+    def add_timeframe(self, start, stop, time_step):
+
+        key = self._get_next_timeframe_key()
+
+        self.time_frames[key] = {
+            "start": start,
+            "stop": stop,
+            "dt": time_step,
+        }
+
+        self._get_all_time_steps()
+        print(f"Added time frame #{key} from {start}s to {stop}s with time step {time_step}s.")
+
+    def _get_next_timeframe_key(self):
+
+        keys = np.fromiter(self.time_frames.keys(), dtype=int)
+        if len(keys) == 0:
+            return 0
+        else:
+            return np.max(keys) + 1
+
+    def _get_all_time_steps(self):
+
+        all_times = np.array([])
+
+        for key, val in self.time_frames.items():
+            all_times = np.append(
+                all_times,
+                np.arange(val["start"] + val["dt"], val["stop"] + val["dt"], val["dt"]),
+            )
+
+        self.times = all_times
 
     def _calculate_sensitivity(self, job_number, duration, cwd=None, _skip=False):
         """Run the `cssens` ctools module based on the given input"""

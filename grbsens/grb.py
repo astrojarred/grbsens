@@ -98,7 +98,7 @@ class grb:
 
             print(f"Running from t0={start_time}s to t1={stop_time}s "
                   f"for a total duration of t={self.params['total_time']} "
-                  f"with {self.params['num_jobs']} time steps of dt={time_step}s each")
+                  f"with time steps of dt={time_step}s each")
 
             self.times = times
 

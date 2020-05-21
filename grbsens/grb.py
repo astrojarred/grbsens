@@ -236,7 +236,6 @@ class grb:
 
 if __name__ == "__main__":
 
-
     # initialize class
     my_grb = grb(input_model=input_model_path, init_time=0, total_time=4, delta_t=1)
 

@@ -115,7 +115,9 @@ class grb:
         sen = cscripts.cssens()
 
         # calculate outfile and logfile names
-        cwd = os.path.abspath('')  # current working directory
+        if cwd is None:
+            cwd = os.path.abspath('')  # set current working directory to execution directory
+
         outfile = f"{cwd}/outputs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
         logfile = f"{cwd}/logs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
 

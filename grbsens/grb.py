@@ -236,17 +236,11 @@ class grb:
 
 if __name__ == "__main__":
 
-    # load environment variables
-    os.environ["CTOOLS"] = "/astri01/data1/gershon/anaconda3/envs/ctools"
-    os.environ["GAMMALIB"] = "/astri01/data1/gershon/anaconda3/envs/ctools"
-    os.environ["CALDB"] = "/astri01/data1/gershon/anaconda3/envs/ctools/share/caldb"
 
     # initialize class
-    input_model_path= "./../notebooks/grb.xml"
     my_grb = grb(input_model=input_model_path, init_time=0, total_time=4, delta_t=1)
 
     # execute grbsens, skip actual running
-    output_directory="/astri01/data1/gershon/ctools_patricelli/notebooks"
-    my_grb.execute(write_to_file=False, cwd=output_directory,_skip=True)
+    my_grb.execute(write_to_file=False, skip=True)
 
     print("done")

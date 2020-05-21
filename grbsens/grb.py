@@ -102,7 +102,7 @@ class grb:
 
         self.times = times
 
-    def _calculate_sensitivity(self, job_number, duration):
+    def _calculate_sensitivity(self, job_number, duration, cwd=None, _skip=False):
         """Run the `cssens` ctools module based on the given input"""
 
         # set duration to a float
@@ -143,7 +143,8 @@ class grb:
         sen["offset"] = self.params["offset"]
 
         # run cssens
-        sen.execute()
+        if not _skip:
+            sen.execute()
 
         # import results into a dataframe
         results = pd.read_csv(outfile)
@@ -159,11 +160,12 @@ class grb:
         # add output pandas df to results dictionary
         self.results[job_number] = results
 
-    def save_to_csv(self, filepath=None):
+    def save_to_csv(self, filepath=None, cwd=None):
         """Save results to a csv"""
 
         if filepath is None:
-            cwd = os.path.abspath('')  # current working directory
+            if cwd is None:
+                cwd = os.path.abspath('')  # current working directory
             start, stop = min(self.times), max(self.times)  # get start and stop times
             filepath = f"{cwd}/outputs/sensi-{self.params['sigma']}sigma_t{start}s-t{stop}s_irf-{self.params['irf']}.csv"
 
@@ -171,11 +173,11 @@ class grb:
         self.output.to_csv(filepath)
         print(f"\nOutput written to {filepath}\n")
 
-    def execute(self, write_to_file=True, output_filepath=None):
+    def execute(self, write_to_file=True, output_filepath=None, cwd=None, _skip=False):
         """Run `cssens` once for each job"""
 
         for job_number, duration in enumerate(self.times):
-            self._calculate_sensitivity(job_number=job_number, duration=duration)
+            self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd, _skip=_skip)
             print(f"Done with duration={duration}s\n")
 
         # concatenate results
@@ -183,10 +185,22 @@ class grb:
 
         # write to csv file
         if write_to_file:
-            self.save_to_csv(filepath=output_filepath)
+            self.save_to_csv(filepath=output_filepath, cwd=cwd)
 
 
 if __name__ == "__main__":
-    my_grb = grb(input_model="grb.xml", init_time=0, total_time=4, delta_t=1, num_jobs=None)
+
+    # load environment variables
+    os.environ["CTOOLS"] = "/astri01/data1/gershon/anaconda3/envs/ctools"
+    os.environ["GAMMALIB"] = "/astri01/data1/gershon/anaconda3/envs/ctools"
+    os.environ["CALDB"] = "/astri01/data1/gershon/anaconda3/envs/ctools/share/caldb"
+
+    # initialize class
+    input_model_path= "./../notebooks/grb.xml"
+    my_grb = grb(input_model=input_model_path, init_time=0, total_time=4, delta_t=1)
+
+    # execute grbsens, skip actual running
+    output_directory="/astri01/data1/gershon/ctools_patricelli/notebooks"
+    my_grb.execute(write_to_file=False, cwd=output_directory,_skip=True)
 
     print("done")

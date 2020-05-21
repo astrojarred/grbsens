@@ -12,8 +12,7 @@ class grb:
     def __init__(
             self,
             input_model,
-            num_jobs=1,
-            total_time=None,
+            total_time=1.,
             delta_t=1.,
             emin=0.03,
             emax=10,
@@ -33,7 +32,6 @@ class grb:
 
         # initialize parameters dictionary
         self.params = {
-            "num_jobs": num_jobs,
             "total_time": total_time,
             "delta_t": delta_t,
             "emin": emin,
@@ -84,27 +82,8 @@ class grb:
         # capitalize sens_type
         self.params["sens_type"] = sens_type.capitalize()
 
-        # check delta_t, num_jobs, total time
-        number_of_params = 0
-        param_not_set = ""
-        for param in ["num_jobs", "total_time", "delta_t"]:
-            if self.params[param] is not None:
-                number_of_params += 1
-            else:
-                param_not_set = param
-
-        # confirm there are only 2/3 parameters given
-        if number_of_params > 2:
-            raise AttributeError("Please do not provide more than 2 of the 3 parameters: "
-                                 "`num_jobs`, `total_time`, `delta_t`")
-
-        # calculate third parameter
-        if param_not_set == "num_jobs":
-            self.params["num_jobs"] = int(self.params["total_time"] / self.params["delta_t"])
-        elif param_not_set == "total_time":
-            self.params["total_time"] = self.params["num_jobs"] * self.params["delta_t"]
-        elif param_not_set == "delta_t":
-            self.params["delta_t"] = self.params["total_time"] / self.params["num_jobs"]
+        # calculate the number of jobs parameter
+        self.params["num_jobs"] = int(self.params["total_time"] / self.params["delta_t"])
 
     def _get_time_steps(self):
         """Create the time steps for the class."""

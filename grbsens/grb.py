@@ -165,31 +165,31 @@ class grb:
         outfile = f"{cwd}/outputs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
         logfile = f"{cwd}/logs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
 
-        # load input model
-        models = gammalib.GModels(self.input_model)
-        models.save(self.input_model)
-        sen["inmodel"] = self.input_model
-
-        # set parameters that change each loop
-        sen["duration"] = duration
-        sen["outfile"] = outfile
-        sen["logfile"] = logfile
-
-        # set global parameters
-        sen["srcname"] = self.params["src_name"]
-        sen["caldb"] = self.params["caldb"]
-        sen["irf"] = self.params["irf"]
-        sen["rad"] = self.params["rad"]
-        sen["emin"] = self.params["emin"]
-        sen["emax"] = self.params["emax"]
-        sen["type"] = self.params["sens_type"]
-        sen["sigma"] = self.params["sigma"]
-        sen["bins"] = self.params["bins"]
-        sen["binsz"] = self.params["binsz"]
-        sen["offset"] = self.params["offset"]
-
         # run cssens
         if not _skip:
+            # load input model
+            models = gammalib.GModels(self.input_model)
+            models.save(self.input_model)
+            sen["inmodel"] = self.input_model
+
+            # set parameters that change each loop
+            sen["duration"] = duration
+            sen["outfile"] = outfile
+            sen["logfile"] = logfile
+
+            # set global parameters
+            sen["srcname"] = self.params["src_name"]
+            sen["caldb"] = self.params["caldb"]
+            sen["irf"] = self.params["irf"]
+            sen["rad"] = self.params["rad"]
+            sen["emin"] = self.params["emin"]
+            sen["emax"] = self.params["emax"]
+            sen["type"] = self.params["sens_type"]
+            sen["sigma"] = self.params["sigma"]
+            sen["bins"] = self.params["bins"]
+            sen["binsz"] = self.params["binsz"]
+            sen["offset"] = self.params["offset"]
+
             sen.execute()
 
         # import results into a dataframe
@@ -219,18 +219,18 @@ class grb:
         self.output.to_csv(filepath)
         print(f"\nOutput written to {filepath}\n")
 
-    def execute(self, write_to_file=True, output_filepath=None, cwd=None, _skip=False):
+    def execute(self, write_to_file=True, output_filepath=None, cwd=None, load_results=False):
         """Run `cssens` once for each job"""
 
         for job_number, duration in enumerate(self.times):
-            self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd, _skip=_skip)
+            self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd, _skip=load_results)
             print(f"Done with duration={duration}s\n")
 
         # concatenate results
         self.output = pd.concat(self.results, ignore_index=True).set_index("job_number")
 
         # write to csv file
-        if write_to_file:
+        if write_to_file and not load_results:
             self.save_to_csv(filepath=output_filepath, cwd=cwd)
 
 

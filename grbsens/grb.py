@@ -234,13 +234,29 @@ class grb:
         if write_to_file and not load_results:
             self.save_to_csv(filepath=output_filepath, cwd=cwd)
 
-    def plot_results(self):
+    def plot_results(self, logx=True, logy=True):
         """Plot results on a duration vs sensitivity scatter."""
 
         fig = plt.figure(figsize=(9, 6))
-        plt.scatter(self.output.duration, np.log10(self.output.sensitivity))
-        plt.xlabel("Duration [s]", size=15)
-        plt.ylabel("$\log_{10}$ Sensitivity [erg/cm2/s]", size=15)
+
+        # log x and y acxis
+        if logy:
+            y = np.log10(self.output.sensitivity)
+            y_label = "$\log_{10}$ Sensitivity [erg/cm2/s]"
+        else:
+            y = self.output.sensitivity
+            y_label = "Sensitivity [erg/cm2/s]"
+
+        if logx:
+            x = np.log10(self.output.duration)
+            x_label = "$\log_{10}$ Duration [s]"
+        else:
+            x = self.output.duration
+            x_label = "Duration [s]"
+
+        plt.scatter(x, y)
+        plt.xlabel(x_label, size=15)
+        plt.ylabel(y_label, size=15)
         #return fig
 
 

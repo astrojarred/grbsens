@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import numbers
+from matplotlib import pyplot as plt
 
 import gammalib
 import cscripts
@@ -232,6 +233,16 @@ class grb:
         # write to csv file
         if write_to_file and not load_results:
             self.save_to_csv(filepath=output_filepath, cwd=cwd)
+
+    def plot_results(self):
+        """Plot results on a duration vs sensitivity scatter."""
+
+        fig = plt.figure(figsize=(9, 6))
+        plt.scatter(self.output.duration, np.log10(self.output.sensitivity))
+        plt.xlabel("Duration [s]", size=15)
+        plt.ylabel("$\log_{10}$ Sensitivity [erg/cm2/s]", size=15)
+        #return fig
+
 
 
 if __name__ == "__main__":

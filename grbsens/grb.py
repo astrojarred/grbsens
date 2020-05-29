@@ -59,6 +59,8 @@ class grb:
         self._check_inputs()
 
         # get time steps
+        self.times = np.array([])
+        self.timeframes = {}
         self._get_time_steps()
 
     def __len__(self):

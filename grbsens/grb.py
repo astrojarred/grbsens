@@ -107,7 +107,7 @@ class grb:
 
         elif self.params["delta_t"] == "custom":
             # create time frames dict
-            self.time_frames = {}
+            self.timeframes = {}
 
             print("Add time frames with custom time steps using "
                   "`grb.add_timeframe(start, stop, time_step)` in seconds.")
@@ -120,7 +120,7 @@ class grb:
 
         key = self._get_next_timeframe_key()
 
-        self.time_frames[key] = {
+        self.timeframes[key] = {
             "start": start,
             "stop": stop,
             "dt": time_step,
@@ -131,7 +131,7 @@ class grb:
 
     def _get_next_timeframe_key(self):
 
-        keys = np.fromiter(self.time_frames.keys(), dtype=int)
+        keys = np.fromiter(self.timeframes.keys(), dtype=int)
         if len(keys) == 0:
             return 0
         else:
@@ -141,7 +141,7 @@ class grb:
 
         all_times = np.array([])
 
-        for key, val in self.time_frames.items():
+        for key, val in self.timeframes.items():
             all_times = np.append(
                 all_times,
                 np.arange(val["start"] + val["dt"], val["stop"] + val["dt"], val["dt"]),

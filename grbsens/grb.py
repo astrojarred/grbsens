@@ -129,6 +129,15 @@ class grb:
         self._get_all_time_steps()
         print(f"Added time frame #{key} from {start}s to {stop}s with time step {time_step}s.")
 
+    def reset_timeframes(self):
+
+        self.times = np.array([])
+        self.timeframes = {}
+
+        print("Successfully reset time frames.\n"
+              "Add time frames with custom time steps using "
+              "`grb.add_timeframe(start, stop, time_step)` in seconds.")
+
     def _get_next_timeframe_key(self):
 
         keys = np.fromiter(self.timeframes.keys(), dtype=int)

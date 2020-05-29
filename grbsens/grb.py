@@ -284,12 +284,17 @@ class grb:
             pool.close()
             pool.join()  # postpones the execution of next line of code until all processes in the queue are done.
 
+            # save parallel results to class
             self.results = dict(parallel_results)
+
             # print success message
             print(f"Done running {len(self.times)} jobs in parallel across {ncores} cores.")
 
         # concatenate results
         self.output = pd.concat(self.results, ignore_index=True).set_index("job_number")
+
+        # sort results by index
+        self.output.sort_index(inplace=True)
 
         # write to csv file
         if write_to_file and not load_results:

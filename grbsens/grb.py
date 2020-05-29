@@ -180,8 +180,6 @@ class grb:
         # run cssens
         if not _skip:
             # load input model
-            models = gammalib.GModels(self.input_model)
-            models.save(self.input_model)
             sen["inmodel"] = self.input_model
 
             # set parameters that change each loop

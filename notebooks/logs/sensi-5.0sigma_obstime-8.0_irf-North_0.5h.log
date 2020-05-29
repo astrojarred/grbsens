@@ -1,0 +1,265 @@
+2020-05-27T11:12:46: ********************************************************************************
+2020-05-27T11:12:46: *                                    cssens                                    *
+2020-05-27T11:12:46: * ---------------------------------------------------------------------------- *
+2020-05-27T11:12:46: * Version: 1.6.3                                                               *
+2020-05-27T11:12:46: ********************************************************************************
+2020-05-27T11:12:47: +============+
+2020-05-27T11:12:47: | Parameters |
+2020-05-27T11:12:47: +============+
+2020-05-27T11:12:47:  inobs .....................: NONE
+2020-05-27T11:12:47:  inmodel ...................: /astri01/data1/gershon/ctools_patricelli/notebooks/grb.xml
+2020-05-27T11:12:47:  srcname ...................: GRB
+2020-05-27T11:12:47:  caldb .....................: prod2
+2020-05-27T11:12:47:  irf .......................: North_0.5h
+2020-05-27T11:12:47:  edisp .....................: no
+2020-05-27T11:12:47:  deadc .....................: 0.98
+2020-05-27T11:12:47:  outfile ...................: /astri01/data1/gershon/ctools_patricelli/notebooks/outputs/sensi-5.0sigma_obstime-8.0_irf-North_0.5h.txt
+2020-05-27T11:12:47:  offset ....................: 0
+2020-05-27T11:12:47:  duration ..................: 8
+2020-05-27T11:12:47:  rad .......................: 2.25
+2020-05-27T11:12:47:  emin ......................: 0.03
+2020-05-27T11:12:47:  emax ......................: 10
+2020-05-27T11:12:47:  bins ......................: 1
+2020-05-27T11:12:47:  enumbins ..................: 0
+2020-05-27T11:12:47:  npix ......................: 200
+2020-05-27T11:12:47:  binsz .....................: 0.2
+2020-05-27T11:12:47:  type ......................: Integral
+2020-05-27T11:12:47:  sigma .....................: 5
+2020-05-27T11:12:47:  max_iter ..................: 50
+2020-05-27T11:12:47:  statistic .................: DEFAULT
+2020-05-27T11:12:47:  nthreads ..................: 0
+2020-05-27T11:12:47:  chatter ...................: 4
+2020-05-27T11:12:47:  clobber ...................: yes
+2020-05-27T11:12:47:  debug .....................: no
+2020-05-27T11:12:47:  mode ......................: ql
+2020-05-27T11:12:47:  logfile ...................: /astri01/data1/gershon/ctools_patricelli/notebooks/logs/sensi-5.0sigma_obstime-8.0_irf-North_0.5h.log
+2020-05-27T11:12:47: 
+2020-05-27T11:12:47: WARNING: Energy dispersion will *NOT* be considered for the computation. To consider
+2020-05-27T11:12:47:          energy dispersion, please set the "edisp" parameter to "yes". Be aware that
+2020-05-27T11:12:47:          using energy dispersion will considerably slow down the computations.
+2020-05-27T11:12:47: 
+2020-05-27T11:12:47: +=================+
+2020-05-27T11:12:47: | Multiprocessing |
+2020-05-27T11:12:47: +=================+
+2020-05-27T11:12:47:  Multiprocessing ...........: available
+2020-05-27T11:12:47:  CPUs available ............: 64
+2020-05-27T11:12:47:  Processes available .......: 64
+2020-05-27T11:12:47: 
+2020-05-27T11:12:47: +===================+
+2020-05-27T11:12:47: | Input observation |
+2020-05-27T11:12:47: +===================+
+2020-05-27T11:12:47: === GObservations ===
+2020-05-27T11:12:47:  Number of observations ....: 1
+2020-05-27T11:12:47:  Number of models ..........: 2
+2020-05-27T11:12:47:  Number of observed events .: 0
+2020-05-27T11:12:47:  Number of predicted events : 0
+2020-05-27T11:12:47: === GCTAObservation ===
+2020-05-27T11:12:47:  Name ......................: 
+2020-05-27T11:12:47:  Identifier ................: 000000
+2020-05-27T11:12:47:  Instrument ................: CTA
+2020-05-27T11:12:47:  Event file ................: 
+2020-05-27T11:12:47:  Event type ................: EventList
+2020-05-27T11:12:47:  Statistic .................: cstat
+2020-05-27T11:12:47:  Ontime ....................: 8 s
+2020-05-27T11:12:47:  Livetime ..................: 7.84 s
+2020-05-27T11:12:47:  Deadtime correction .......: 0.98
+2020-05-27T11:12:47:  User energy range .........: undefined
+2020-05-27T11:12:47: === GCTAPointing ===
+2020-05-27T11:12:47:  Pointing direction ........: (l,b)=(0,0)
+2020-05-27T11:12:47: === GCTAResponseIrf ===
+2020-05-27T11:12:47:  Caldb mission .............: cta
+2020-05-27T11:12:47:  Caldb instrument ..........: prod2
+2020-05-27T11:12:47:  Response name .............: North_0.5h
+2020-05-27T11:12:47:  Energy dispersion .........: Not used
+2020-05-27T11:12:47:  Safe energy range .........: undefined
+2020-05-27T11:12:47: === GCaldb ===
+2020-05-27T11:12:47:  Database root .............: /astri01/data1/gershon/anaconda3/envs/ctools/share/caldb
+2020-05-27T11:12:47:  Selected Mission ..........: CTA
+2020-05-27T11:12:47:  Selected Instrument .......: PROD2
+2020-05-27T11:12:47:  Calibration Index File ....: /astri01/data1/gershon/anaconda3/envs/ctools/share/caldb/data/cta/prod2/caldb.indx
+2020-05-27T11:12:47:  Number of entries .........: 24
+2020-05-27T11:12:47: === GCTAAeff2D ===
+2020-05-27T11:12:47:  Filename ..................: /astri01/data1/gershon/anaconda3/envs/ctools/share/caldb/data/cta/prod2/bcf/North_0.5h/irf_file.fits
+2020-05-27T11:12:47:  Number of energy bins .....: 500
+2020-05-27T11:12:47:  Number of offset bins .....: 45
+2020-05-27T11:12:47:  Log10(Energy) range .......: 0.00501187238842249 - 501.187225341797 TeV
+2020-05-27T11:12:47:  Offset angle range ........: 0 - 4.5 deg
+2020-05-27T11:12:47:  Lower energy threshold ....: not specified
+2020-05-27T11:12:47:  Upper energy threshold ....: not specified
+2020-05-27T11:12:47:  Radius cut ................: none
+2020-05-27T11:12:47: === GCTAPsf2D ===
+2020-05-27T11:12:47:  Filename ..................: /astri01/data1/gershon/anaconda3/envs/ctools/share/caldb/data/cta/prod2/bcf/North_0.5h/irf_file.fits
+2020-05-27T11:12:47:  Number of energy bins .....: 21
+2020-05-27T11:12:47:  Number of offset bins .....: 2
+2020-05-27T11:12:47:  Log10(Energy) range .......: 0.0125892544165254 - 199.526214599609 TeV
+2020-05-27T11:12:47:  Offset angle range ........: 0 - 9 deg
+2020-05-27T11:12:47: === GCTAEdisp2D ===
+2020-05-27T11:12:47:  Filename ..................: /astri01/data1/gershon/anaconda3/envs/ctools/share/caldb/data/cta/prod2/bcf/North_0.5h/irf_file.fits
+2020-05-27T11:12:47:  Number of energy bins .....: 500
+2020-05-27T11:12:47:  Number of migration bins ..: 300
+2020-05-27T11:12:47:  Number of offset bins .....: 2
+2020-05-27T11:12:47:  Log10(Energy) range .......: 0.00501187238842249 - 501.187225341797 TeV
+2020-05-27T11:12:47:  Migration range ...........: 0 - 3
+2020-05-27T11:12:47:  Offset angle range ........: 0 - 9 deg
+2020-05-27T11:12:47: === GCTABackground3D ===
+2020-05-27T11:12:47:  Filename ..................: /astri01/data1/gershon/anaconda3/envs/ctools/share/caldb/data/cta/prod2/bcf/North_0.5h/irf_file.fits
+2020-05-27T11:12:47:  Number of DETX bins .......: 90
+2020-05-27T11:12:47:  Number of DETY bins .......: 90
+2020-05-27T11:12:47:  Number of energy bins .....: 21
+2020-05-27T11:12:47:  DETX range ................: -4.5 - 4.5 deg
+2020-05-27T11:12:47:  DETX range ................: -4.5 - 4.5 deg
+2020-05-27T11:12:47:  Energy range ..............: 0.0125892544165254 - 199.526214599609 TeV
+2020-05-27T11:12:47: === GCTAResponseCache ===
+2020-05-27T11:12:47:  Number of cached values ...: 0
+2020-05-27T11:12:47: === GCTAResponseCache ===
+2020-05-27T11:12:47:  Number of cached values ...: 0
+2020-05-27T11:12:47: === GCTAEventList ===
+2020-05-27T11:12:47:  Number of events ..........: 0 (disposed without possibility to recover)
+2020-05-27T11:12:47:  Time interval .............: 51544.5 - 51544.5000925926 days
+2020-05-27T11:12:47: === GEbounds ===
+2020-05-27T11:12:47:  Number of intervals .......: 1
+2020-05-27T11:12:47:  Energy range ..............: 30 GeV - 10 TeV
+2020-05-27T11:12:47: === GCTARoi ===
+2020-05-27T11:12:47:  RoI centre ................: RA=266.404994802193, DEC=-28.9361739597975 [0,0]
+2020-05-27T11:12:47:  RoI radius ................: 2.25 deg
+2020-05-27T11:12:47: === GSkyRegions ===
+2020-05-27T11:12:47:  Number of regions .........: 0
+2020-05-27T11:12:47: === GModels ===
+2020-05-27T11:12:47:  Number of models ..........: 2
+2020-05-27T11:12:47:  Number of parameters ......: 10
+2020-05-27T11:12:47: === GModelSky ===
+2020-05-27T11:12:47:  Name ......................: GRB
+2020-05-27T11:12:47:  Instruments ...............: all
+2020-05-27T11:12:47:  Observation identifiers ...: all
+2020-05-27T11:12:47:  Model type ................: PointSource
+2020-05-27T11:12:47:  Model components ..........: "PointSource" * "PowerLaw" * "Constant"
+2020-05-27T11:12:47:  Number of parameters ......: 6
+2020-05-27T11:12:47:  Number of spatial par's ...: 2
+2020-05-27T11:12:47:   RA .......................: 83.6331 [-360,360] deg (fixed,scale=1)
+2020-05-27T11:12:47:   DEC ......................: 22.0145 [-90,90] deg (fixed,scale=1)
+2020-05-27T11:12:47:  Number of spectral par's ..: 3
+2020-05-27T11:12:47:   Prefactor ................: 5.7e-07 +/- 0 [1e-17,1000] ph/cm2/s/MeV (free,scale=1e-07,gradient)
+2020-05-27T11:12:47:   Index ....................: -2.1 +/- 0 [-0,-5]  (free,scale=-1,gradient)
+2020-05-27T11:12:47:   PivotEnergy ..............: 1000 [10,1000000] MeV (fixed,scale=1000,gradient)
+2020-05-27T11:12:47:  Number of temporal par's ..: 1
+2020-05-27T11:12:47:   Normalization ............: 1 (relative value) (fixed,scale=1,gradient)
+2020-05-27T11:12:47:  Number of scale par's .....: 0
+2020-05-27T11:12:47: === GCTAModelIrfBackground ===
+2020-05-27T11:12:47:  Name ......................: CTABackgroundModel
+2020-05-27T11:12:47:  Instruments ...............: CTA
+2020-05-27T11:12:47:  Observation identifiers ...: all
+2020-05-27T11:12:47:  Model type ................: "PowerLaw" * "Constant"
+2020-05-27T11:12:47:  Number of parameters ......: 4
+2020-05-27T11:12:47:  Number of spectral par's ..: 3
+2020-05-27T11:12:47:   Prefactor ................: 1 +/- 0 [0.001,1000] ph/cm2/s/MeV (free,scale=1,gradient)
+2020-05-27T11:12:47:   Index ....................: 0 +/- 0 [-5,5]  (free,scale=1,gradient)
+2020-05-27T11:12:47:   PivotEnergy ..............: 1000000 [10000,1000000000000] MeV (fixed,scale=1000000,gradient)
+2020-05-27T11:12:47:  Number of temporal par's ..: 1
+2020-05-27T11:12:47:   Normalization ............: 1 (relative value) (fixed,scale=1,gradient)
+2020-05-27T11:12:47: 
+2020-05-27T11:12:47: +==============+
+2020-05-27T11:12:47: | Input models |
+2020-05-27T11:12:47: +==============+
+2020-05-27T11:12:47: === GModels ===
+2020-05-27T11:12:47:  Number of models ..........: 2
+2020-05-27T11:12:47:  Number of parameters ......: 10
+2020-05-27T11:12:47: === GModelSky ===
+2020-05-27T11:12:47:  Name ......................: GRB
+2020-05-27T11:12:47:  Instruments ...............: all
+2020-05-27T11:12:47:  Test Statistic ............: Computation requested
+2020-05-27T11:12:47:  Observation identifiers ...: all
+2020-05-27T11:12:47:  Model type ................: PointSource
+2020-05-27T11:12:47:  Model components ..........: "PointSource" * "PowerLaw" * "Constant"
+2020-05-27T11:12:47:  Number of parameters ......: 6
+2020-05-27T11:12:47:  Number of spatial par's ...: 2
+2020-05-27T11:12:47:   RA .......................: 266.404994802193 [-360,360] deg (fixed,scale=1)
+2020-05-27T11:12:47:   DEC ......................: -28.9361739597975 [-90,90] deg (fixed,scale=1)
+2020-05-27T11:12:47:  Number of spectral par's ..: 3
+2020-05-27T11:12:47:   Prefactor ................: 5.7e-07 +/- 0 [1e-17,1000] ph/cm2/s/MeV (free,scale=1e-07,gradient)
+2020-05-27T11:12:47:   Index ....................: -2.1 [-0,-5]  (fixed,scale=-1,gradient)
+2020-05-27T11:12:47:   PivotEnergy ..............: 1000 [10,1000000] MeV (fixed,scale=1000,gradient)
+2020-05-27T11:12:47:  Number of temporal par's ..: 1
+2020-05-27T11:12:47:   Normalization ............: 1 (relative value) (fixed,scale=1,gradient)
+2020-05-27T11:12:47:  Number of scale par's .....: 0
+2020-05-27T11:12:47: === GCTAModelIrfBackground ===
+2020-05-27T11:12:47:  Name ......................: CTABackgroundModel
+2020-05-27T11:12:47:  Instruments ...............: CTA
+2020-05-27T11:12:47:  Observation identifiers ...: all
+2020-05-27T11:12:47:  Model type ................: "PowerLaw" * "Constant"
+2020-05-27T11:12:47:  Number of parameters ......: 4
+2020-05-27T11:12:47:  Number of spectral par's ..: 3
+2020-05-27T11:12:47:   Prefactor ................: 1 +/- 0 [0.001,1000] ph/cm2/s/MeV (free,scale=1,gradient)
+2020-05-27T11:12:47:   Index ....................: 0 +/- 0 [-5,5]  (free,scale=1,gradient)
+2020-05-27T11:12:47:   PivotEnergy ..............: 1000000 [10000,1000000000000] MeV (fixed,scale=1000000,gradient)
+2020-05-27T11:12:47:  Number of temporal par's ..: 1
+2020-05-27T11:12:47:   Normalization ............: 1 (relative value) (fixed,scale=1,gradient)
+2020-05-27T11:12:47: 
+2020-05-27T11:12:47: +===========================+
+2020-05-27T11:12:47: | Sensitivity determination |
+2020-05-27T11:12:47: +===========================+
+2020-05-27T11:12:47:  Type ......................: Integral
+2020-05-27T11:12:47: 
+2020-05-27T11:12:47: +---------------------------+
+2020-05-27T11:12:47: | Energies: 30 GeV - 10 TeV |
+2020-05-27T11:12:47: +---------------------------+
+2020-05-27T11:12:47: === Initial parameters ===
+2020-05-27T11:12:47:  Crab flux .................: 3.4886245596327748e-09 ph/cm2/s
+2020-05-27T11:12:47:  Source model flux .........: 1.2272113477562559e-05 ph/cm2/s
+2020-05-27T11:12:47:  Crab unit factor ..........: 0.0002842725147555979
+2020-05-27T11:12:47: === Iterations ===
+2020-05-27T11:12:47: +-------------+
+2020-05-27T11:12:47: | Iteration 1 |
+2020-05-27T11:12:47: +-------------+
+2020-05-27T11:13:04: === Simulation ===
+2020-05-27T11:13:04:  Number of simulated events : 147.0
+2020-05-27T11:13:05:  Iteration 1 ...............: TS=   16.1489  Sim= 100.0000 mCrab  Fit= 153.9598 mCrab  Sens=2.127509e-11 erg/cm2/s
+2020-05-27T11:13:05: +-------------+
+2020-05-27T11:13:05: | Iteration 2 |
+2020-05-27T11:13:05: +-------------+
+2020-05-27T11:13:22: === Simulation ===
+2020-05-27T11:13:22:  Number of simulated events : 153.0
+2020-05-27T11:13:23:  Iteration 2 ...............: TS=   22.1214  Sim= 191.5602 mCrab  Fit= 275.1424 mCrab  Sens=3.802082e-11 erg/cm2/s
+2020-05-27T11:13:23: +-------------+
+2020-05-27T11:13:23: | Iteration 3 |
+2020-05-27T11:13:23: +-------------+
+2020-05-27T11:13:40: === Simulation ===
+2020-05-27T11:13:40:  Number of simulated events : 136.0
+2020-05-27T11:13:41:  Iteration 3 ...............: TS=   21.3274  Sim= 344.8069 mCrab  Fit= 373.0277 mCrab  Sens=5.154720e-11 erg/cm2/s
+2020-05-27T11:13:41: +-------------+
+2020-05-27T11:13:41: | Iteration 4 |
+2020-05-27T11:13:41: +-------------+
+2020-05-27T11:13:58: === Simulation ===
+2020-05-27T11:13:58:  Number of simulated events : 145.0
+2020-05-27T11:13:59:  Iteration 4 ...............: TS=   84.4133  Sim= 440.5025 mCrab  Fit= 522.0463 mCrab  Sens=7.213948e-11 erg/cm2/s
+2020-05-27T11:13:59: +-------------+
+2020-05-27T11:13:59: | Iteration 5 |
+2020-05-27T11:13:59: +-------------+
+2020-05-27T11:14:16: === Simulation ===
+2020-05-27T11:14:16:  Number of simulated events : 149.0
+2020-05-27T11:14:18:  Iteration 5 ...............: TS=    4.6213  Sim= 280.7244 mCrab  Fit=  71.0883 mCrab  Sens=9.823411e-12 erg/cm2/s
+2020-05-27T11:14:18:  Converged result ..........: TS=    4.6213  Sim= 267.2454 mCrab                       Sens=3.692957e-11 erg/cm2/s
+2020-05-27T11:14:18:  Converged flux ratio ......: 0.9519849700587504
+2020-05-27T11:14:18:  Regression coefficient ....: 0.8689906471319416
+2020-05-27T11:14:18: === Fit results ===
+2020-05-27T11:14:18:  Photon flux ...............: 9.323187801543915e-10 ph/cm2/s
+2020-05-27T11:14:18:  Energy flux ...............: 2.17558358707645e-10 erg/cm2/s
+2020-05-27T11:14:18:  Crab flux .................: 267.2453754245572 mCrab
+2020-05-27T11:14:18:  Differential sensitivity ..: 3.6929565107116816e-11 erg/cm2/s
+2020-05-27T11:14:18:  Number of simulated events : 149.0
+2020-05-27T11:14:18: === Test source model fitting ===
+2020-05-27T11:14:18:  log likelihood ............: 646.1520649621857
+2020-05-27T11:14:18:  Number of predicted events : 148.99814900165
+2020-05-27T11:14:18:  Model .....................: GRB
+2020-05-27T11:14:18:   RA .......................: 266.404994802193 [-360,360] deg (fixed,scale=1)
+2020-05-27T11:14:18:   DEC ......................: -28.9361739597975 [-90,90] deg (fixed,scale=1)
+2020-05-27T11:14:18:   Prefactor ................: 1.15188218927899e-11 +/- 1.16428892489762e-11 [1e-17,1000] ph/cm2/s/MeV (free,scale=1e-07,gradient)
+2020-05-27T11:14:18:   Index ....................: -2.1 [-0,-5]  (fixed,scale=-1,gradient)
+2020-05-27T11:14:18:   PivotEnergy ..............: 1000 [10,1000000] MeV (fixed,scale=1000,gradient)
+2020-05-27T11:14:18:   Normalization ............: 1 (relative value) (fixed,scale=1,gradient)
+2020-05-27T11:14:18:  Model .....................: CTABackgroundModel
+2020-05-27T11:14:18:   Prefactor ................: 1.35623715150098 +/- 0.401923382803737 [0.001,1000] ph/cm2/s/MeV (free,scale=1,gradient)
+2020-05-27T11:14:18:   Index ....................: 0.0858450795267985 +/- 0.105506713637062 [-5,5]  (free,scale=1,gradient)
+2020-05-27T11:14:18:   PivotEnergy ..............: 1000000 [10000,1000000000000] MeV (fixed,scale=1000000,gradient)
+2020-05-27T11:14:18:   Normalization ............: 1 (relative value) (fixed,scale=1,gradient)
+2020-05-27T11:14:18: 
+2020-05-27T11:14:18: Application "cssens" terminated after 92 wall clock seconds, consuming 91.4276 seconds of CPU time.

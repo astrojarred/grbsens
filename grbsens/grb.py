@@ -273,8 +273,7 @@ class grb:
         plt.scatter(x, y)
         plt.xlabel(x_label, size=15)
         plt.ylabel(y_label, size=15)
-        #return fig
-
+        # return fig
 
 
 if __name__ == "__main__":

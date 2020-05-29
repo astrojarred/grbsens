@@ -158,7 +158,7 @@ class grb:
 
         self.times = all_times
 
-    def _calculate_sensitivity(self, job_number, duration, cwd=None, _skip=False):
+    def _calculate_sensitivity(self, job_number, duration, cwd=None, nthreads=0, _skip=False):
         """Run the `cssens` ctools module based on the given input"""
 
         # set duration to a float
@@ -201,6 +201,13 @@ class grb:
             sen["bins"] = self.params["bins"]
             sen["binsz"] = self.params["binsz"]
             sen["offset"] = self.params["offset"]
+
+            # set number of cores
+            sen["nthreads"] = nthreads
+            print(f"Running with {nthreads} cores.")
+            # set chatter to max
+            sen["chatter"] = 4
+
 
             sen.execute()
 

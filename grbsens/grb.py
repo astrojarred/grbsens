@@ -236,11 +236,11 @@ class grb:
         self.output.to_csv(filepath)
         print(f"\nOutput written to {filepath}\n")
 
-    def execute(self, write_to_file=True, output_filepath=None, cwd=None, load_results=False):
+    def execute(self, write_to_file=True, output_filepath=None, cwd=None, nthreads=0, load_results=False):
         """Run `cssens` once for each job"""
 
         for job_number, duration in enumerate(self.times):
-            self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd, _skip=load_results)
+            self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd, nthreads=nthreads, _skip=load_results)
             print(f"Done with duration={duration}s\n")
 
         # concatenate results

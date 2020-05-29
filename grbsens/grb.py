@@ -206,7 +206,6 @@ class grb:
             # set chatter to max
             sen["chatter"] = 4
 
-
             sen.execute()
 
         # format results into pandas DataFrame

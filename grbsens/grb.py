@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import numbers
 from matplotlib import pyplot as plt
+import multiprocessing as mp
 
 import gammalib
 import cscripts
@@ -158,7 +159,7 @@ class grb:
 
         self.times = all_times
 
-    def _calculate_sensitivity(self, job_number, duration, cwd=None, nthreads=0, _skip=False):
+    def _calculate_sensitivity(self, job_number, duration, cwd=None, parallel_results=None, nthreads=1, _skip=False):
         """Run the `cssens` ctools module based on the given input"""
 
         # set duration to a float
@@ -200,14 +201,27 @@ class grb:
             sen["binsz"] = self.params["binsz"]
             sen["offset"] = self.params["offset"]
 
-            # set number of cores
+            # set number of cores used for energy bins
             sen["nthreads"] = nthreads
-            print(f"Running with {nthreads} cores.")
             # set chatter to max
             sen["chatter"] = 4
 
 
             sen.execute()
+
+        # format results into pandas DataFrame
+        results = self._results_to_df(outfile, duration, job_number, logfile)
+
+        # add output pandas df to results dictionary
+        self._save_results(results=results, job_number=job_number, parallel_results=parallel_results)
+
+        # print success message
+        print(f"Done with job #{job_number}, duration={duration}s\n")
+
+
+    @staticmethod
+    def _results_to_df(outfile, duration, job_number, logfile):
+        """Format results of _calculate_sensitivity into a pandas DataFrame"""
 
         # import results into a dataframe
         results = pd.read_csv(outfile)
@@ -220,8 +234,14 @@ class grb:
         results['output_file'] = [outfile]
         results['log_file'] = [logfile]
 
-        # add output pandas df to results dictionary
-        self.results[job_number] = results
+        return results
+
+    def _save_results(self, results, job_number, parallel_results=None):
+        """Write results of _calculate sensitivity to the grb class"""
+        if parallel_results is None:
+            self.results[job_number] = results
+        else:
+            parallel_results[job_number] = results
 
     def save_to_csv(self, filepath=None, cwd=None):
         """Save results to a csv"""
@@ -236,12 +256,38 @@ class grb:
         self.output.to_csv(filepath)
         print(f"\nOutput written to {filepath}\n")
 
-    def execute(self, write_to_file=True, output_filepath=None, cwd=None, nthreads=0, load_results=False):
+    def execute(self, write_to_file=True, output_filepath=None, cwd=None, parallel=False,
+                ncores=1, nthreads=1, load_results=False):
         """Run `cssens` once for each job"""
+        if not parallel:
+            for job_number, duration in enumerate(self.times):
+                self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd,
+                                            nthreads=nthreads, _skip=load_results)
+        elif parallel:
+            # run in parallel with asynchronous pooling
+            # check that selected cores is not too many
+            if ncores > mp.cpu_count():
+                raise AttributeError(f"Selected quantity of cores {ncores} "
+                                     f"is greater than available cores {mp.cpu_count()}.")
+            # set up pool with ncores CPUs
+            pool = mp.Pool(ncores)
 
-        for job_number, duration in enumerate(self.times):
-            self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd, nthreads=nthreads, _skip=load_results)
-            print(f"Done with duration={duration}s\n")
+            # set up results storage manager
+            manager = mp.Manager()
+            parallel_results = manager.dict()
+
+            # run loop
+            for job_number, duration in enumerate(self.times):
+                pool.apply_async(self._calculate_sensitivity,
+                                 args=(job_number, duration, cwd, parallel_results, nthreads, load_results))
+
+            # Close Pool and let all the processes complete
+            pool.close()
+            pool.join()  # postpones the execution of next line of code until all processes in the queue are done.
+
+            self.results = dict(parallel_results)
+            # print success message
+            print(f"Done running {len(self.times)} jobs in parallel across {ncores} cores.")
 
         # concatenate results
         self.output = pd.concat(self.results, ignore_index=True).set_index("job_number")
@@ -282,6 +328,6 @@ if __name__ == "__main__":
     my_grb = grb(input_model="grb.xml", init_time=0, total_time=4, delta_t=1)
 
     # execute grbsens, skip actual running
-    my_grb.execute(write_to_file=False, skip=True)
+    my_grb.execute(write_to_file=False, parallel=True, ncores=10)
 
     print("done")

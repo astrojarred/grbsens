@@ -159,14 +159,15 @@ class grb:
 
         self.times = all_times
 
-    def _calculate_sensitivity(self, job_number, duration, cwd=None, parallel_results=None, nthreads=1, _skip=False):
+    def _calculate_sensitivity(self, job_number, duration, cwd=None, parallel_results=None,
+                               nthreads=1, _skip=False, verbose=True):
         """Run the `cssens` ctools module based on the given input"""
 
         # set duration to a float
         duration = float(duration)
-
-        print(f"Running `cssens` job #{job_number} for "
-              f"{self.params['src_name']} for a duration of {duration}s")
+        if verbose:
+            print(f"Running `cssens` job #{job_number} for "
+                  f"{self.params['src_name']} for a duration of {duration}s")
 
         # create cssens object
         sen = cscripts.cssens()
@@ -214,8 +215,9 @@ class grb:
         # add output pandas df to results dictionary
         self._save_results(results=results, job_number=job_number, parallel_results=parallel_results)
 
-        # print success message
-        print(f"Done with job #{job_number}, duration={duration}s\n")
+        if verbose:
+            # print success message
+            print(f"Done with job #{job_number}, duration={duration}s\n")
 
 
     @staticmethod
@@ -256,12 +258,13 @@ class grb:
         print(f"\nOutput written to {filepath}\n")
 
     def execute(self, write_to_file=True, output_filepath=None, cwd=None, parallel=False,
-                ncores=1, nthreads=1, load_results=False):
+                ncores=1, nthreads=1, load_results=False, verbose=True):
         """Run `cssens` once for each job"""
+
         if not parallel:
             for job_number, duration in enumerate(self.times):
                 self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd,
-                                            nthreads=nthreads, _skip=load_results)
+                                            nthreads=nthreads, _skip=load_results, verbose=verbose)
         elif parallel:
             # run in parallel with asynchronous pooling
             # check that selected cores is not too many
@@ -278,7 +281,7 @@ class grb:
             # run loop
             for job_number, duration in enumerate(self.times):
                 pool.apply_async(self._calculate_sensitivity,
-                                 args=(job_number, duration, cwd, parallel_results, nthreads, load_results))
+                                 args=(job_number, duration, cwd, parallel_results, nthreads, load_results, verbose))
 
             # Close Pool and let all the processes complete
             pool.close()

@@ -274,6 +274,8 @@ class grb:
             # set up pool with ncores CPUs
             pool = mp.Pool(ncores)
 
+            print(f"Running {len(self.times)} jobs in parallel across {ncores} cores.")
+
             # set up results storage manager
             manager = mp.Manager()
             parallel_results = manager.dict()

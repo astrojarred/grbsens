@@ -123,6 +123,7 @@ class grb:
             stop_time = self.params["stop_time"]
             log_steps = self.params["log_steps"]
 
+            # catch invalid start times
             if np.log10(start_time) == -np.inf:
                 raise AttributeError("In log mode, `start_time` cannot be equal to 0.")
 

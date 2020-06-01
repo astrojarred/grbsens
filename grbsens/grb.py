@@ -251,7 +251,7 @@ class grb:
         results['duration'] = [duration]
         results['job_number'] = [job_number]
 
-        # add output and log filepaths as columns
+        # add output and log file paths as columns
         results['output_file'] = [outfile]
         results['log_file'] = [logfile]
 

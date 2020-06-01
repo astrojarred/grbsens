@@ -16,7 +16,7 @@ class grb:
     def __init__(
             self,
             input_model,
-            start_time=1.,
+            start_time=0.,
             stop_time=1.,
             delta_t=1.,
             log_steps=None,

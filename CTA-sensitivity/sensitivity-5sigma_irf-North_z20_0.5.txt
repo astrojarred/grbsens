@@ -1,3 +1,0 @@
-#
-# Obs time	crab_flux	photon_flux	energy_flux	sensitivity
-#s	Crab	ph/cm2/s	erg/cm2/s	erg/cm2/s

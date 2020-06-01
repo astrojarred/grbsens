@@ -1,11 +1,12 @@
 import os
+
 import numpy as np
 import pandas as pd
 import numbers
 from matplotlib import pyplot as plt
 import multiprocessing as mp
+from tqdm.auto import tqdm
 
-import gammalib
 import cscripts
 
 
@@ -258,11 +259,13 @@ class grb:
         print(f"\nOutput written to {filepath}\n")
 
     def execute(self, write_to_file=True, output_filepath=None, cwd=None, parallel=False,
-                ncores=1, nthreads=1, load_results=False, verbose=True):
+                ncores=1, nthreads=1, load_results=False, verbose=False):
         """Run `cssens` once for each job"""
 
         if not parallel:
-            for job_number, duration in enumerate(self.times):
+            for job_number, duration in tqdm(enumerate(self.times),
+                                             total=len(self.times),
+                                             desc=f'{self.params["src_name"]}'):
                 self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd,
                                             nthreads=nthreads, _skip=load_results, verbose=verbose)
         elif parallel:
@@ -280,10 +283,14 @@ class grb:
             manager = mp.Manager()
             parallel_results = manager.dict()
 
+            # initialize progress bar
+            progress_bar = tqdm(total=len(self.times), desc=f'{self.params["src_name"]}')
+
             # run loop
             for job_number, duration in enumerate(self.times):
                 pool.apply_async(self._calculate_sensitivity,
-                                 args=(job_number, duration, cwd, parallel_results, nthreads, load_results, verbose))
+                                 args=(job_number, duration, cwd, parallel_results, nthreads, load_results, verbose),
+                                 callback=lambda _: progress_bar.update(1))
 
             # Close Pool and let all the processes complete
             pool.close()

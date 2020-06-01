@@ -258,7 +258,7 @@ class grb:
         print(f"\nOutput written to {filepath}\n")
 
     def execute(self, write_to_file=True, output_filepath=None, cwd=None, parallel=False,
-                ncores=1, nthreads=1, load_results=False, verbose=True):
+                ncores=1, nthreads=1, load_results=False, verbose=False):
         """Run `cssens` once for each job"""
 
         if not parallel:

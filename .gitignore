@@ -139,3 +139,7 @@ cython_debug/
 
 # pycharm files
 .idea/*
+
+# Mac files
+.DS_Store
+notebooks/.DS_Store

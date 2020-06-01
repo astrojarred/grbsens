@@ -114,6 +114,9 @@ class grb:
             print("Add time frames with custom time steps using "
                   "`grb.add_timeframe(start, stop, time_step)` in seconds.")
 
+        elif self.params["delta_t"] == "log":
+            pass
+
         else:
             raise AttributeError("Choose a either a single value for `delta_t` or select 'custom' to"
                                  "add custom time frames with unique time steps.")

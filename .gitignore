@@ -143,3 +143,8 @@ cython_debug/
 # Mac files
 .DS_Store
 notebooks/.DS_Store
+
+# jupyter files
+notebooks/.ipynb_checkpoints/*
+notebooks/logs/*
+notebooks/outputs/*

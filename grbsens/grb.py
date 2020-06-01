@@ -274,7 +274,7 @@ class grb:
             # set up pool with ncores CPUs
             pool = mp.Pool(ncores)
 
-            print(f"Running {len(self.times)} jobs in parallel across {ncores} cores.")
+            print(f"Running {len(self.times)} jobs in parallel across {ncores} cores:")
 
             # set up results storage manager
             manager = mp.Manager()
@@ -293,7 +293,7 @@ class grb:
             self.results = dict(parallel_results)
 
             # print success message
-            print(f"Done running {len(self.times)} jobs in parallel across {ncores} cores.")
+            print(f"Done running {len(self.times)} jobs in parallel across {ncores} cores!")
 
         # concatenate results
         self.output = pd.concat(self.results, ignore_index=True).set_index("job_number")

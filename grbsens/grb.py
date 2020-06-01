@@ -16,13 +16,13 @@ class grb:
     def __init__(
             self,
             input_model,
-            total_time=1.,
+            start_time=1.,
+            stop_time=1.,
             delta_t=1.,
             emin=0.03,
             emax=10,
             bins=1,
             irf="North_0.5h",
-            init_time=1.,
             sigma=5.,
             offset=0.,
             binsz=0.2,
@@ -36,13 +36,13 @@ class grb:
 
         # initialize parameters dictionary
         self.params = {
-            "total_time": total_time,
+            "stop_time": stop_time,
             "delta_t": delta_t,
             "emin": emin,
             "emax": emax,
             "bins": bins,
             "irf": irf,
-            "init_time": init_time,
+            "start_time": start_time,
             "sigma": sigma,
             "offset": offset,
             "binsz": binsz,
@@ -93,8 +93,8 @@ class grb:
 
         if isinstance(self.params["delta_t"], numbers.Number):
 
-            start_time = self.params["init_time"]
-            stop_time = self.params["init_time"] + self.params["total_time"]
+            start_time = self.params["start_time"]
+            stop_time = self.params["start_time"] + self.params["stop_time"]
             time_step = self.params["delta_t"]
             times = np.arange(start_time + time_step, stop_time + time_step, time_step)
 
@@ -102,7 +102,7 @@ class grb:
             self.params["stop_time"] = stop_time
 
             print(f"Running from t0={start_time}s to t1={stop_time}s "
-                  f"for a total duration of t={self.params['total_time']} "
+                  f"for a total duration of t={self.params['stop_time'] - self.params['start_time']} "
                   f"with time steps of dt={time_step}s each")
 
             self.times = times
@@ -115,7 +115,18 @@ class grb:
                   "`grb.add_timeframe(start, stop, time_step)` in seconds.")
 
         elif self.params["delta_t"] == "log":
-            pass
+
+            if self.params["log_steps"] is None:
+                raise AttributeError("For log mode, please specify the initial time, total time, "
+                                     "and number of time steps with `start_time`, `stop_time`,"
+                                     "and `log_steps`, respectively.")
+
+            start_time = self.params["start_time"]
+            stop_time = np.log10(self.params["start_time"] + self.params["stop_time"])
+            log_steps = self.params["log_steps"]
+            times = np.logspace(start_time, stop_time, log_steps)
+
+            self.times = times
 
         else:
             raise AttributeError("Choose a either a single value for `delta_t` or select 'custom' to"
@@ -344,7 +355,7 @@ class grb:
 if __name__ == "__main__":
 
     # initialize class
-    my_grb = grb(input_model="grb.xml", init_time=0, total_time=4, delta_t=1)
+    my_grb = grb(input_model="grb.xml", start_time=0, stop_time=4, delta_t=1)
 
     # execute grbsens, skip actual running
     my_grb.execute(write_to_file=False, parallel=True, ncores=10)

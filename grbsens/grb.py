@@ -19,6 +19,7 @@ class grb:
             start_time=1.,
             stop_time=1.,
             delta_t=1.,
+            log_steps=None,
             emin=0.03,
             emax=10,
             bins=1,
@@ -38,6 +39,7 @@ class grb:
         self.params = {
             "stop_time": stop_time,
             "delta_t": delta_t,
+            "log_steps" : log_steps,
             "emin": emin,
             "emax": emax,
             "bins": bins,
@@ -94,15 +96,11 @@ class grb:
         if isinstance(self.params["delta_t"], numbers.Number):
 
             start_time = self.params["start_time"]
-            stop_time = self.params["start_time"] + self.params["stop_time"]
+            stop_time = self.params["stop_time"]
             time_step = self.params["delta_t"]
             times = np.arange(start_time + time_step, stop_time + time_step, time_step)
 
-            # add stop time to params2
-            self.params["stop_time"] = stop_time
-
             print(f"Running from t0={start_time}s to t1={stop_time}s "
-                  f"for a total duration of t={self.params['stop_time'] - self.params['start_time']} "
                   f"with time steps of dt={time_step}s each")
 
             self.times = times
@@ -122,9 +120,16 @@ class grb:
                                      "and `log_steps`, respectively.")
 
             start_time = self.params["start_time"]
-            stop_time = np.log10(self.params["start_time"] + self.params["stop_time"])
+            stop_time = self.params["stop_time"]
             log_steps = self.params["log_steps"]
-            times = np.logspace(start_time, stop_time, log_steps)
+
+            if np.log10(start_time) == -np.inf:
+                raise AttributeError("In log mode, `start_time` cannot be equal to 0.")
+
+            times = np.logspace(np.log10(start_time), np.log10(stop_time), log_steps)
+
+            print(f"Running from t0={start_time}s to t1={stop_time}s "
+                  f"with {log_steps} time steps on a log scale.")
 
             self.times = times
 

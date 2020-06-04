@@ -34,7 +34,7 @@ class grb:
             caldb="prod2",
             src_name="GRB",
     ):
-        """Initialize class. TODO: add parameters"""
+        """Initialize class. TODO: add parameters."""
         self.input_model = input_model
 
         # initialize parameters dictionary
@@ -332,7 +332,6 @@ class grb:
 
     def plot_results(self, logx=True, logy=True):
         """Plot results on a duration vs sensitivity scatter."""
-
         plt.figure(figsize=(9, 6))
 
         # log x and y acxis

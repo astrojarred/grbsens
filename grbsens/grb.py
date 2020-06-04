@@ -24,6 +24,7 @@ class grb:
             emax=10,
             bins=1,
             irf="North_0.5h",
+            npix=100,
             sigma=5.,
             offset=0.,
             binsz=0.2,
@@ -44,6 +45,7 @@ class grb:
             "emax": emax,
             "bins": bins,
             "irf": irf,
+            "npix" : npix,
             "start_time": start_time,
             "sigma": sigma,
             "offset": offset,
@@ -222,6 +224,7 @@ class grb:
             sen["bins"] = self.params["bins"]
             sen["binsz"] = self.params["binsz"]
             sen["offset"] = self.params["offset"]
+            sen["npix"] = self.params["npix"]
 
             # set number of cores used for energy bins
             sen["nthreads"] = nthreads

@@ -173,7 +173,7 @@ class grb:
 
         all_times = np.array([])
 
-        for key, val in self.timeframes.items():
+        for val in self.timeframes.values():
             all_times = np.append(
                 all_times,
                 np.arange(val["start"] + val["dt"], val["stop"] + val["dt"], val["dt"]),

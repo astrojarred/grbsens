@@ -11,6 +11,7 @@ import cscripts
 
 
 class grb:
+
     """This is a class to store all the information about a GRB that is to be run."""
 
     def __init__(
@@ -33,7 +34,7 @@ class grb:
             caldb="prod2",
             src_name="GRB",
     ):
-
+        """Initialize class. TODO: add parameters"""
         self.input_model = input_model
 
         # initialize parameters dictionary
@@ -70,20 +71,19 @@ class grb:
         self._get_time_steps()
 
     def __len__(self):
-        """Returns number of time steps"""
+        """Returns number of time steps."""
         return len(self.times)
 
     def __getitem__(self, item):
-        """Return parameter"""
+        """Return parameter."""
         return self.params[item]
 
     def __setitem__(self, key, value):
-        """Set a parameter manually"""
+        """Set a parameter manually."""
         self.params[key] = value
 
     def _check_inputs(self):
-        """Check the validity of the inputs upon class initialization"""
-
+        """Check the validity of the inputs upon class initialization."""
         # check sensitivity type is either integral or differential
         sens_type = self.params["sens_type"].lower()
         if sens_type != "integral" and sens_type != "differential":
@@ -94,7 +94,6 @@ class grb:
 
     def _get_time_steps(self):
         """Create the time steps for the class."""
-
         if isinstance(self.params["delta_t"], numbers.Number):
 
             start_time = self.params["start_time"]
@@ -184,8 +183,7 @@ class grb:
 
     def _calculate_sensitivity(self, job_number, duration, cwd=None, parallel_results=None,
                                nthreads=1, _skip=False, verbose=True):
-        """Run the `cssens` ctools module based on the given input"""
-
+        """Run the `cssens` ctools module based on the given input."""
         # set duration to a float
         duration = float(duration)
         if verbose:
@@ -246,8 +244,7 @@ class grb:
 
     @staticmethod
     def _results_to_df(outfile, duration, job_number, logfile):
-        """Format results of _calculate_sensitivity into a pandas DataFrame"""
-
+        """Format results of _calculate_sensitivity into a pandas DataFrame."""
         # import results into a dataframe
         results = pd.read_csv(outfile)
 
@@ -262,15 +259,14 @@ class grb:
         return results
 
     def _save_results(self, results, job_number, parallel_results=None):
-        """Write results of _calculate sensitivity to the grb class"""
+        """Write results of _calculate sensitivity to the grb class."""
         if parallel_results is None:
             self.results[job_number] = results
         else:
             parallel_results[job_number] = results
 
     def save_to_csv(self, filepath=None, cwd=None):
-        """Save results to a csv"""
-
+        """Save results to a csv."""
         if filepath is None:
             if cwd is None:
                 cwd = os.path.abspath('')  # current working directory
@@ -283,8 +279,7 @@ class grb:
 
     def execute(self, write_to_file=True, output_filepath=None, cwd=None, parallel=False,
                 ncores=1, nthreads=1, load_results=False, verbose=False):
-        """Run `cssens` once for each job"""
-
+        """Run `cssens` once for each job."""
         if not parallel:
             for job_number, duration in tqdm(enumerate(self.times),
                                              total=len(self.times),
@@ -338,7 +333,7 @@ class grb:
     def plot_results(self, logx=True, logy=True):
         """Plot results on a duration vs sensitivity scatter."""
 
-        fig = plt.figure(figsize=(9, 6))
+        plt.figure(figsize=(9, 6))
 
         # log x and y acxis
         if logy:

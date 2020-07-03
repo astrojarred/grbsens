@@ -6,6 +6,7 @@ import numbers
 from matplotlib import pyplot as plt
 import multiprocessing as mp
 from tqdm.auto import tqdm
+from pathlib import Path
 
 import cscripts
 
@@ -200,12 +201,8 @@ class grb:
         # create cssens object
         sen = cscripts.cssens()
 
-        # calculate outfile and logfile names
-        if cwd is None:
-            cwd = os.path.abspath('')  # set current working directory to execution directory
-
-        outfile = f"{cwd}/outputs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
-        logfile = f"{cwd}/logs/sensi-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
+        outfile = f"{cwd}/cssens_outputs/grbsens-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
+        logfile = f"{cwd}/cssens_logs/grbsens-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
 
         # run cssens
         if not _skip:
@@ -278,7 +275,7 @@ class grb:
             if cwd is None:
                 cwd = os.path.abspath('')  # current working directory
             start, stop = min(self.times), max(self.times)  # get start and stop times
-            filepath = f"{cwd}/outputs/sensi-{self.params['sigma']}sigma_t{start}s-t{stop}s_irf-{self.params['irf']}.csv"
+            filepath = f"{cwd}/grbsens_results/grbsens-{self.params['sigma']}sigma_t{start}s-t{stop}s_irf-{self.params['irf']}.csv"
 
         # save as csv
         self.output.to_csv(filepath)
@@ -287,6 +284,15 @@ class grb:
     def execute(self, write_to_file=True, output_filepath=None, cwd=None, parallel=False,
                 ncores=1, nthreads=1, load_results=False, verbose=False):
         """Run `cssens` once for each job."""
+
+        # create output folders if they don't already exist
+        if cwd is None:
+            cwd = os.path.abspath('')  # set current working directory to execution directory
+
+        Path(f"{cwd}/cssens_outputs").mkdir(parents=True, exist_ok=True)
+        Path(f"{cwd}/cssens_logs").mkdir(parents=True, exist_ok=True)
+        Path(f"{cwd}/grbsens_results").mkdir(parents=True, exist_ok=True)
+
         if not parallel:
             for job_number, duration in tqdm(enumerate(self.times),
                                              total=len(self.times),

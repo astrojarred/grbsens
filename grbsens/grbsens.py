@@ -113,6 +113,8 @@ class grb:
         elif isinstance(self.params["delta_t"], (list, np.ndarray)):
 
             self.times = self.params["delta_t"]
+            self.params["start_time"] = min(self.times)
+            self.params["stop_time"] = max(self.times)
 
         elif self.params["delta_t"] == "custom":
             # create time frames dict

@@ -94,6 +94,8 @@ class grb:
 
     def _get_time_steps(self):
         """Create the time steps for the class."""
+
+        # catch normal time steps
         if isinstance(self.params["delta_t"], numbers.Number):
 
             start_time = self.params["start_time"]
@@ -105,6 +107,11 @@ class grb:
                   f"with time steps of dt={time_step}s each")
 
             self.times = times
+
+        # catch arrays for manual time steps
+        elif isinstance(self.params["delta_t"], (list, np.ndarray)):
+
+            self.times = self.params["delta_t"]
 
         elif self.params["delta_t"] == "custom":
             # create time frames dict

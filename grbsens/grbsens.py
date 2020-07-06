@@ -192,7 +192,7 @@ class grb:
         self.times = all_times
 
     def _calculate_sensitivity(self, job_number, duration, cwd=None, parallel_results=None,
-                               nthreads=1, _skip=False, verbose=True):
+                               nthreads=1, load_results=False, verbose=True):
         """Run the `cssens` ctools module based on the given input."""
         # set duration to a float
         duration = float(duration)
@@ -207,7 +207,7 @@ class grb:
         logfile = f"{cwd}/cssens_logs/grbsens-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
 
         # run cssens
-        if not _skip:
+        if not load_results:
             # load input model
             sen["inmodel"] = self.input_model
 
@@ -300,7 +300,7 @@ class grb:
                                              total=len(self.times),
                                              desc=f'{self.params["src_name"]}'):
                 self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd,
-                                            nthreads=nthreads, _skip=load_results, verbose=verbose)
+                                            nthreads=nthreads, load_results=load_results, verbose=verbose)
         elif parallel:
             # run in parallel with asynchronous pooling
             # check that selected cores is not too many

@@ -207,7 +207,7 @@ class grb:
         logfile = f"{cwd}/cssens_logs/grbsens-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
 
         # run cssens
-        if not load_results:
+        if not load_results or not Path(outfile).is_file():
             # load input model
             sen["inmodel"] = self.input_model
 
@@ -342,7 +342,7 @@ class grb:
         self.output.sort_index(inplace=True)
 
         # write to csv file
-        if write_to_file and not load_results:
+        if write_to_file:
             self.save_to_csv(filepath=output_filepath, cwd=cwd)
 
     def plot_results(self, logx=True, logy=True):

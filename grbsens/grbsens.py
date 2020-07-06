@@ -338,8 +338,15 @@ class grb:
         # concatenate results
         self.output = pd.concat(self.results, ignore_index=True).set_index("job_number")
 
+        # set durations to integers
+        self.output.duration = [int(i) for i in self.output.duration]
+
+        # set duration as index
+        self.output.set_index("duration", inplace=True)
+
         # sort results by index
         self.output.sort_index(inplace=True)
+
 
         # write to csv file
         if write_to_file:

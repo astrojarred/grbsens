@@ -12,7 +12,6 @@ import cscripts
 
 
 class grb:
-
     """This is a class to store all the information about a GRB that is to be run."""
 
     def __init__(
@@ -42,12 +41,12 @@ class grb:
         self.params = {
             "stop_time": stop_time,
             "delta_t": delta_t,
-            "log_steps" : log_steps,
+            "log_steps": log_steps,
             "emin": emin,
             "emax": emax,
             "bins": bins,
             "irf": irf,
-            "npix" : npix,
+            "npix": npix,
             "start_time": start_time,
             "sigma": sigma,
             "offset": offset,
@@ -247,7 +246,6 @@ class grb:
             # print success message
             print(f"Done with job #{job_number}, duration={duration}s\n")
 
-
     @staticmethod
     def _results_to_df(outfile, duration, job_number, logfile):
         """Format results of _calculate_sensitivity into a pandas DataFrame."""
@@ -347,7 +345,6 @@ class grb:
         # sort results by index
         self.output.sort_index(inplace=True)
 
-
         # write to csv file
         if write_to_file:
             self.save_to_csv(filepath=output_filepath, cwd=cwd)
@@ -378,7 +375,6 @@ class grb:
 
 
 if __name__ == "__main__":
-
     # initialize class
     my_grb = grb(input_model="grb.xml", start_time=0, stop_time=4, delta_t=1)
 

@@ -270,13 +270,15 @@ class grb:
         else:
             parallel_results[job_number] = results
 
-    def save_to_csv(self, filepath=None, cwd=None):
+    def save_to_csv(self, filename=None, cwd=None):
         """Save results to a csv."""
-        if filepath is None:
+        if filename is None:
             if cwd is None:
                 cwd = os.path.abspath('')  # current working directory
             start, stop = min(self.times), max(self.times)  # get start and stop times
-            filepath = f"{cwd}/grbsens_results/grbsens-{self.params['sigma']}sigma_t{start}s-t{stop}s_irf-{self.params['irf']}.csv"
+            filename = f"grbsens-{self.params['sigma']}sigma_t{start}s-t{stop}s_irf-{self.params['irf']}.txt"
+
+        filepath = f"{cwd}/grbsens_results/{filename}"
 
         # The following steps to match the standard output formatting
         # copy output df
@@ -309,7 +311,7 @@ class grb:
 
         print(f"\nOutput written to {filepath}\n")
 
-    def execute(self, write_to_file=True, output_filepath=None, cwd=None, parallel=False,
+    def execute(self, write_to_file=True, output_filename=None, cwd=None, parallel=False,
                 ncores=1, nthreads=1, load_results=False, verbose=False):
         """Run `cssens` once for each job."""
 
@@ -375,7 +377,7 @@ class grb:
 
         # write to csv file
         if write_to_file:
-            self.save_to_csv(filepath=output_filepath, cwd=cwd)
+            self.save_to_csv(filename=output_filename, cwd=cwd)
 
     def plot_results(self, logx=True, logy=True):
         """Plot results on a duration vs sensitivity scatter."""

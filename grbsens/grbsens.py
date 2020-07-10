@@ -61,6 +61,7 @@ class grb:
         # initialize results dictionary and output
         self.results = {}
         self.output = None
+        self.std_output_df = None
 
         # check inputs
         self._check_inputs()
@@ -277,8 +278,35 @@ class grb:
             start, stop = min(self.times), max(self.times)  # get start and stop times
             filepath = f"{cwd}/grbsens_results/grbsens-{self.params['sigma']}sigma_t{start}s-t{stop}s_irf-{self.params['irf']}.csv"
 
-        # save as csv
-        self.output.to_csv(filepath)
+        # The following steps to match the standard output formatting
+        # copy output df
+        f = self.output.copy(deep=True)
+
+        # Create a new column called Obs time
+        f["Obs time"] = f.index
+
+        # Select which columns to print
+        f = f[["Obs time", "crab_flux", "photon_flux", "energy_flux", "sensitivity"]]
+
+        # round outputs to 6 decimal places in scientific notation
+        for c in ["crab_flux", "photon_flux", "energy_flux", "sensitivity"]:
+            f[c] = np.array([f"{i:.6e}" for i in f[c]])
+
+        # space out observations times
+        f["Obs time"] = np.array([f"{i:<9}" for i in f["Obs time"]])
+
+        # write comment lines with column names and units
+        with open(filepath, 'w') as file:
+            # file.write(f"#{sim.params['sigma']}sigma_t{min(sim.times)}s-t{max(sim.times)}s_irf-{sim.params['irf']}\n")
+            file.write("#Obs time   crab_flux       photon_flux     energy_flux     sensitivity\n")
+            file.write("#s          crab units      ph/cm2/s        erg/cm2/s       erg/cm2/s  \n")
+
+        # write to csv
+        f.to_csv(filepath, sep="\t", index=False, header=False, mode='a')
+
+        # save standard output dataframe source to class
+        self.std_output_df = f.copy(deep=True)
+
         print(f"\nOutput written to {filepath}\n")
 
     def execute(self, write_to_file=True, output_filepath=None, cwd=None, parallel=False,

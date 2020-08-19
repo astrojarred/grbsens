@@ -2,4 +2,4 @@ numpy==1.18.5
 pandas==1.0.5
 matplotlib==3.2.2
 tqdm==4.47.0
-setuptools==47.3.1.post20200622
+setuptools>=47.3.1

@@ -204,7 +204,7 @@ class grb:
         sen = cscripts.cssens()
 
         outfile = f"{cwd}/cssens_outputs/grbsens-{self.params['sigma']}" \
-                  f"sigma_obstime-{duration}_irf-{self.params['irf']}.txt "
+                  f"sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
         logfile = f"{cwd}/cssens_logs/grbsens-{self.params['sigma']}" \
                   f"sigma_obstime-{duration}_irf-{self.params['irf']}.log"
 

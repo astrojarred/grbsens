@@ -203,8 +203,10 @@ class grb:
         # create cssens object
         sen = cscripts.cssens()
 
-        outfile = f"{cwd}/cssens_outputs/grbsens-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
-        logfile = f"{cwd}/cssens_logs/grbsens-{self.params['sigma']}sigma_obstime-{duration}_irf-{self.params['irf']}.log"
+        outfile = f"{cwd}/cssens_outputs/grbsens-{self.params['sigma']}" \
+                  f"sigma_obstime-{duration}_irf-{self.params['irf']}.txt "
+        logfile = f"{cwd}/cssens_logs/grbsens-{self.params['sigma']}" \
+                  f"sigma_obstime-{duration}_irf-{self.params['irf']}.log"
 
         # run cssens
         if not load_results or not Path(outfile).is_file():

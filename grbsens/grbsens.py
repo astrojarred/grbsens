@@ -301,7 +301,6 @@ class grb:
 
         # write comment lines with column names and units
         with open(filepath, 'w') as file:
-            # file.write(f"#{sim.params['sigma']}sigma_t{min(sim.times)}s-t{max(sim.times)}s_irf-{sim.params['irf']}\n")
             file.write("#Obs time   crab_flux       photon_flux     energy_flux     sensitivity\n")
             file.write("#s          crab units      ph/cm2/s        erg/cm2/s       erg/cm2/s  \n")
 

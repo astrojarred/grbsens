@@ -301,8 +301,9 @@ class grb:
 
         # write comment lines with column names and units
         with open(filepath, 'w') as file:
-            file.write("#Obs time   crab_flux       photon_flux     energy_flux     sensitivity\n")
-            file.write("#s          crab units      ph/cm2/s        erg/cm2/s       erg/cm2/s  \n")
+            file.write("#\n")
+            file.write("#Obs time\tcrab_flux\tphoton_flux\tenergy_flux\tsensitivity\n")
+            file.write("#s\tcrab units\tph/cm2/s\terg/cm2/s\terg/cm2/s\n")
 
         # write to csv
         f.to_csv(filepath, sep="\t", index=False, header=False, mode='a')

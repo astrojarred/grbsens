@@ -407,7 +407,7 @@ class grb:
         # log x and y axis
         if logy:
             plt.yscale("log")
-            y_label = f"$\log_{10}$ {label} {unit}"
+            y_label = f"$\log_{{10}}$ {label} {unit}"
         else:
             y_label = f"{label} {unit}"
 

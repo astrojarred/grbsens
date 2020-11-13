@@ -387,17 +387,17 @@ class grb:
 
         # log x and y acxis
         if logy:
-            y = np.log10(self.output.sensitivity)
+            y = np.log10(np.array(self.output.sensitivity))
             y_label = "$\log_{10}$ Sensitivity [erg/cm2/s]"
         else:
-            y = self.output.sensitivity
+            y = np.array(self.output.sensitivity)
             y_label = "Sensitivity [erg/cm2/s]"
 
         if logx:
-            x = np.log10(self.output.duration)
+            x = np.log10(np.array(self.output.index))
             x_label = "$\log_{10}$ Duration [s]"
         else:
-            x = self.output.duration
+            x = np.array(self.output.index)
             x_label = "Duration [s]"
 
         plt.scatter(x, y)

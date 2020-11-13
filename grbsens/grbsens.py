@@ -418,7 +418,7 @@ class grb:
                     y,
                     marker="D",
                     label=name,
-                    colors="orange",
+                    color="orange",
                 )
                 
         # log x and y axis

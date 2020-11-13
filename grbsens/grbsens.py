@@ -404,6 +404,23 @@ class grb:
                  label="Photon flux",
                  alpha=0.8,
                  )
+
+        if crosscheck_dfs:
+            for df, name in zip(crosscheck_dfs, crosscheck_names):
+
+                if mode.lower() == "sensitivity":
+                    y = np.array(df.sensitivity)
+                else:
+                    y = np.array(df.photon_flux)
+
+                plt.scatter(
+                    np.array(df.index),
+                    y,
+                    marker="D",
+                    label=name,
+                    colors="orange",
+                )
+                
         # log x and y axis
         if logy:
             plt.yscale("log")
@@ -416,15 +433,6 @@ class grb:
             x_label = "$\log_{10}$ Duration [s]"
         else:
             x_label = "Duration [s]"
-
-        if crosscheck_dfs:
-            for df, name in zip(crosscheck_dfs, crosscheck_names):
-                plt.scatter(
-                    np.array(df.index),
-                    np.array(df.photon_flux),
-                    marker="D",
-                    label=name,
-                )
 
         plt.title(f"grbsens {self.params['src_name']} {self.params['irf']}", fontsize=15, family="monospace")
         plt.xlabel(x_label, size=15)

@@ -381,29 +381,49 @@ class grb:
         if write_to_file:
             self.save_to_csv(filename=output_filename, cwd=cwd)
 
-    def plot_results(self, logx=True, logy=True):
+    def plot_results(self, logx=True, logy=True, mode="sensitivity", return_fig=False):
         """Plot results on a duration vs sensitivity scatter."""
-        plt.figure(figsize=(9, 6))
+        fig = plt.figure(figsize=(10, 8))
 
-        # log x and y acxis
-        if logy:
-            y = np.log10(np.array(self.output.sensitivity))
-            y_label = "$\log_{10}$ Sensitivity [erg/cm2/s]"
-        else:
+        x = np.array(self.output.index)
+
+        if mode.lower() == "sensitivity":
+            label = "Sensitivity"
+            unit = "[erg/cm2/s]"
             y = np.array(self.output.sensitivity)
-            y_label = "Sensitivity [erg/cm2/s]"
+        else:
+            label = "Photon Flux"
+            unit = "[ph/cm2/s]"
+            y = np.array(self.output.photon_flux)
+
+
+        plt.plot(x,
+                 y,
+                 marker="o",
+                 markersize=3,
+                 label="Photon flux",
+                 alpha=0.8,
+                 )
+        # log x and y axis
+        if logy:
+            plt.yscale("log")
+            y_label = f"$\log_{10}$ {label} {unit}"
+        else:
+            y_label = f"{label} {unit}"
 
         if logx:
-            x = np.log10(np.array(self.output.index))
+            plt.xscale("log")
             x_label = "$\log_{10}$ Duration [s]"
         else:
-            x = np.array(self.output.index)
             x_label = "Duration [s]"
 
-        plt.scatter(x, y)
+        plt.title(f"grbsens {self.params['src_name']} {self.params['irf']}", fontsize=15, family="monospace")
         plt.xlabel(x_label, size=15)
         plt.ylabel(y_label, size=15)
-        # return fig
+        plt.legend(ncol=2, fancybox=True, shadow=True)
+
+        if return_fig:
+            return fig
 
 
 if __name__ == "__main__":

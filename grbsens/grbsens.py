@@ -381,7 +381,7 @@ class grb:
         if write_to_file:
             self.save_to_csv(filename=output_filename, cwd=cwd)
 
-    def plot_results(self, logx=True, logy=True, mode="sensitivity", return_fig=False):
+    def plot_results(self, logx=True, logy=True, mode="sensitivity", return_fig=False, crosscheck_dfs=None, crosscheck_names=None):
         """Plot results on a duration vs sensitivity scatter."""
         fig = plt.figure(figsize=(10, 8))
 
@@ -416,6 +416,15 @@ class grb:
             x_label = "$\log_{10}$ Duration [s]"
         else:
             x_label = "Duration [s]"
+
+        if crosscheck_dfs:
+            for df, name in zip(crosscheck_dfs, crosscheck_names):
+                plt.scatter(
+                    np.array(df.index),
+                    np.array(df.photon_flux),
+                    marker="D",
+                    label=name,
+                )
 
         plt.title(f"grbsens {self.params['src_name']} {self.params['irf']}", fontsize=15, family="monospace")
         plt.xlabel(x_label, size=15)

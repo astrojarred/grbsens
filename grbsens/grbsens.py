@@ -401,7 +401,7 @@ class grb:
                  y,
                  marker="o",
                  markersize=3,
-                 label="Photon flux",
+                 label=label,
                  alpha=0.8,
                  )
 

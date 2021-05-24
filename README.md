@@ -10,4 +10,4 @@ This package is currently under active development and not ready for deployment.
 Coming soon
 
 ## Usage
-Coming soon
+Coming soon -- adding CLI next

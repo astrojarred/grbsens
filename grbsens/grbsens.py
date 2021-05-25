@@ -15,24 +15,24 @@ class grb:
     """This is a class to store all the information about a GRB that is to be run."""
 
     def __init__(
-            self,
-            input_model,
-            start_time=0.,
-            stop_time=1.,
-            delta_t=1.,
-            log_steps=None,
-            emin=0.03,
-            emax=10,
-            bins=1,
-            irf="North_0.5h",
-            npix=100,
-            sigma=5.,
-            offset=0.,
-            binsz=0.2,
-            sens_type="Integral",
-            rad=2.25,
-            caldb="prod2",
-            src_name="GRB",
+        self,
+        input_model,
+        start_time=0.0,
+        stop_time=1.0,
+        delta_t=1.0,
+        log_steps=None,
+        emin=0.03,
+        emax=10,
+        bins=1,
+        irf="North_0.5h",
+        npix=100,
+        sigma=5.0,
+        offset=0.0,
+        binsz=0.2,
+        sens_type="Integral",
+        rad=2.25,
+        caldb="prod2",
+        src_name="GRB",
     ):
         """Initialize class. TODO: add parameters."""
         self.input_model = input_model
@@ -55,7 +55,6 @@ class grb:
             "rad": rad,
             "caldb": caldb,
             "src_name": src_name,
-
         }
 
         # initialize results dictionary and output
@@ -88,8 +87,9 @@ class grb:
         # check sensitivity type is either integral or differential
         sens_type = self.params["sens_type"].lower()
         if sens_type != "integral" and sens_type != "differential":
-            raise AttributeError("Parameter `sens_type` must be"
-                                 " either 'Integral' or 'Differential'.")
+            raise AttributeError(
+                "Parameter `sens_type` must be" " either 'Integral' or 'Differential'."
+            )
         # capitalize sens_type
         self.params["sens_type"] = sens_type.capitalize()
 
@@ -104,8 +104,10 @@ class grb:
             time_step = self.params["delta_t"]
             times = np.arange(start_time + time_step, stop_time + time_step, time_step)
 
-            print(f"Running from t0={start_time}s to t1={stop_time}s "
-                  f"with time steps of dt={time_step}s each")
+            print(
+                f"Running from t0={start_time}s to t1={stop_time}s "
+                f"with time steps of dt={time_step}s each"
+            )
 
             self.times = times
 
@@ -120,15 +122,19 @@ class grb:
             # create time frames dict
             self.timeframes = {}
 
-            print("Add time frames with custom time steps using "
-                  "`grb.add_timeframe(start, stop, time_step)` in seconds.")
+            print(
+                "Add time frames with custom time steps using "
+                "`grb.add_timeframe(start, stop, time_step)` in seconds."
+            )
 
         elif self.params["delta_t"] == "log":
 
             if self.params["log_steps"] is None:
-                raise AttributeError("For log mode, please specify the initial time, total time, "
-                                     "and number of time steps with `start_time`, `stop_time`,"
-                                     "and `log_steps`, respectively.")
+                raise AttributeError(
+                    "For log mode, please specify the initial time, total time, "
+                    "and number of time steps with `start_time`, `stop_time`,"
+                    "and `log_steps`, respectively."
+                )
 
             start_time = self.params["start_time"]
             stop_time = self.params["stop_time"]
@@ -140,14 +146,18 @@ class grb:
 
             times = np.logspace(np.log10(start_time), np.log10(stop_time), log_steps)
 
-            print(f"Running from t0={start_time}s to t1={stop_time}s "
-                  f"with {log_steps} time steps on a log scale.")
+            print(
+                f"Running from t0={start_time}s to t1={stop_time}s "
+                f"with {log_steps} time steps on a log scale."
+            )
 
             self.times = times
 
         else:
-            raise AttributeError("Choose a either a single value for `delta_t` or select 'custom' to"
-                                 "add custom time frames with unique time steps.")
+            raise AttributeError(
+                "Choose a either a single value for `delta_t` or select 'custom' to"
+                "add custom time frames with unique time steps."
+            )
 
     def add_timeframe(self, start, stop, time_step):
 
@@ -160,16 +170,20 @@ class grb:
         }
 
         self._get_all_time_steps()
-        print(f"Added time frame #{key} from {start}s to {stop}s with time step {time_step}s.")
+        print(
+            f"Added time frame #{key} from {start}s to {stop}s with time step {time_step}s."
+        )
 
     def reset_timeframes(self):
 
         self.times = np.array([])
         self.timeframes = {}
 
-        print("Successfully reset time frames.\n"
-              "Add time frames with custom time steps using "
-              "`grb.add_timeframe(start, stop, time_step)` in seconds.")
+        print(
+            "Successfully reset time frames.\n"
+            "Add time frames with custom time steps using "
+            "`grb.add_timeframe(start, stop, time_step)` in seconds."
+        )
 
     def _get_next_timeframe_key(self):
 
@@ -191,22 +205,36 @@ class grb:
 
         self.times = all_times
 
-    def _calculate_sensitivity(self, job_number, duration, cwd=None, parallel_results=None,
-                               nthreads=1, load_results=False, verbose=True):
+    def _calculate_sensitivity(
+        self,
+        job_number,
+        duration,
+        cwd=None,
+        parallel_results=None,
+        nthreads=1,
+        load_results=False,
+        verbose=True,
+    ):
         """Run the `cssens` ctools module based on the given input."""
         # set duration to a float
         duration = float(duration)
         if verbose:
-            print(f"Running `cssens` job #{job_number} for "
-                  f"{self.params['src_name']} for a duration of {duration}s")
+            print(
+                f"Running `cssens` job #{job_number} for "
+                f"{self.params['src_name']} for a duration of {duration}s"
+            )
 
         # create cssens object
         sen = cscripts.cssens()
 
-        outfile = f"{cwd}/cssens_outputs/grbsens-{self.params['sigma']}" \
-                  f"sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
-        logfile = f"{cwd}/cssens_logs/grbsens-{self.params['sigma']}" \
-                  f"sigma_obstime-{duration}_irf-{self.params['irf']}.log"
+        outfile = (
+            f"{cwd}/cssens_outputs/grbsens-{self.params['sigma']}"
+            f"sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
+        )
+        logfile = (
+            f"{cwd}/cssens_logs/grbsens-{self.params['sigma']}"
+            f"sigma_obstime-{duration}_irf-{self.params['irf']}.log"
+        )
 
         # run cssens
         if not load_results or not Path(outfile).is_file():
@@ -243,7 +271,9 @@ class grb:
         results = self._results_to_df(outfile, duration, job_number, logfile)
 
         # add output pandas df to results dictionary
-        self._save_results(results=results, job_number=job_number, parallel_results=parallel_results)
+        self._save_results(
+            results=results, job_number=job_number, parallel_results=parallel_results
+        )
 
         if verbose:
             # print success message
@@ -256,12 +286,12 @@ class grb:
         results = pd.read_csv(outfile)
 
         # add duration and job number as a column
-        results['duration'] = [duration]
-        results['job_number'] = [job_number]
+        results["duration"] = [duration]
+        results["job_number"] = [job_number]
 
         # add output and log file paths as columns
-        results['output_file'] = [outfile]
-        results['log_file'] = [logfile]
+        results["output_file"] = [outfile]
+        results["log_file"] = [logfile]
 
         return results
 
@@ -276,7 +306,7 @@ class grb:
         """Save results to a csv."""
         if filename is None:
             if cwd is None:
-                cwd = os.path.abspath('')  # current working directory
+                cwd = os.path.abspath("")  # current working directory
             start, stop = min(self.times), max(self.times)  # get start and stop times
             filename = f"grbsens-{self.params['sigma']}sigma_t{start}s-t{stop}s_irf-{self.params['irf']}.txt"
 
@@ -300,43 +330,64 @@ class grb:
         f["Obs time"] = np.array([f"{i:<9}" for i in f["Obs time"]])
 
         # write comment lines with column names and units
-        with open(filepath, 'w') as file:
+        with open(filepath, "w") as file:
             file.write("#\n")
             file.write("#Obs time\tcrab_flux\tphoton_flux\tenergy_flux\tsensitivity\n")
             file.write("#s\tcrab units\tph/cm2/s\terg/cm2/s\terg/cm2/s\n")
 
         # write to csv
-        f.to_csv(filepath, sep="\t", index=False, header=False, mode='a')
+        f.to_csv(filepath, sep="\t", index=False, header=False, mode="a")
 
         # save standard output dataframe source to class
         self.std_output_df = f.copy(deep=True)
 
         print(f"\nOutput written to {filepath}\n")
 
-    def execute(self, write_to_file=True, output_filename=None, cwd=None, parallel=False,
-                ncores=1, nthreads=1, load_results=False, verbose=False):
+    def execute(
+        self,
+        write_to_file=True,
+        output_filename=None,
+        cwd=None,
+        parallel=False,
+        ncores=1,
+        nthreads=1,
+        load_results=False,
+        verbose=False,
+    ):
         """Run `cssens` once for each job."""
 
         # create output folders if they don't already exist
         if cwd is None:
-            cwd = os.path.abspath('')  # set current working directory to execution directory
+            cwd = os.path.abspath(
+                ""
+            )  # set current working directory to execution directory
 
         Path(f"{cwd}/cssens_outputs").mkdir(parents=True, exist_ok=True)
         Path(f"{cwd}/cssens_logs").mkdir(parents=True, exist_ok=True)
         Path(f"{cwd}/grbsens_results").mkdir(parents=True, exist_ok=True)
 
         if not parallel:
-            for job_number, duration in tqdm(enumerate(self.times),
-                                             total=len(self.times),
-                                             desc=f'{self.params["src_name"]}'):
-                self._calculate_sensitivity(job_number=job_number, duration=duration, cwd=cwd,
-                                            nthreads=nthreads, load_results=load_results, verbose=verbose)
+            for job_number, duration in tqdm(
+                enumerate(self.times),
+                total=len(self.times),
+                desc=f'{self.params["src_name"]}',
+            ):
+                self._calculate_sensitivity(
+                    job_number=job_number,
+                    duration=duration,
+                    cwd=cwd,
+                    nthreads=nthreads,
+                    load_results=load_results,
+                    verbose=verbose,
+                )
         elif parallel:
             # run in parallel with asynchronous pooling
             # check that selected cores is not too many
             if ncores > mp.cpu_count():
-                raise AttributeError(f"Selected quantity of cores {ncores} "
-                                     f"is greater than available cores {mp.cpu_count()}.")
+                raise AttributeError(
+                    f"Selected quantity of cores {ncores} "
+                    f"is greater than available cores {mp.cpu_count()}."
+                )
             # set up pool with ncores CPUs
             pool = mp.Pool(ncores)
 
@@ -347,13 +398,25 @@ class grb:
             parallel_results = manager.dict()
 
             # initialize progress bar
-            progress_bar = tqdm(total=len(self.times), desc=f'{self.params["src_name"]}')
+            progress_bar = tqdm(
+                total=len(self.times), desc=f'{self.params["src_name"]}'
+            )
 
             # run loop
             for job_number, duration in enumerate(self.times):
-                pool.apply_async(self._calculate_sensitivity,
-                                 args=(job_number, duration, cwd, parallel_results, nthreads, load_results, verbose),
-                                 callback=lambda _: progress_bar.update(1))
+                pool.apply_async(
+                    self._calculate_sensitivity,
+                    args=(
+                        job_number,
+                        duration,
+                        cwd,
+                        parallel_results,
+                        nthreads,
+                        load_results,
+                        verbose,
+                    ),
+                    callback=lambda _: progress_bar.update(1),
+                )
 
             # Close Pool and let all the processes complete
             pool.close()
@@ -363,7 +426,9 @@ class grb:
             self.results = dict(parallel_results)
 
             # print success message
-            print(f"Done running {len(self.times)} jobs in parallel across {ncores} cores!")
+            print(
+                f"Done running {len(self.times)} jobs in parallel across {ncores} cores!"
+            )
 
         # concatenate results
         self.output = pd.concat(self.results, ignore_index=True).set_index("job_number")
@@ -381,7 +446,15 @@ class grb:
         if write_to_file:
             self.save_to_csv(filename=output_filename, cwd=cwd)
 
-    def plot_results(self, logx=True, logy=True, mode="sensitivity", return_fig=False, crosscheck_dfs=None, crosscheck_names=None):
+    def plot_results(
+        self,
+        logx=True,
+        logy=True,
+        mode="sensitivity",
+        return_fig=False,
+        crosscheck_dfs=None,
+        crosscheck_names=None,
+    ):
         """Plot results on a duration vs sensitivity scatter."""
         fig = plt.figure(figsize=(10, 8))
 
@@ -396,14 +469,14 @@ class grb:
             unit = "[ph/cm2/s]"
             y = np.array(self.output.photon_flux)
 
-
-        plt.plot(x,
-                 y,
-                 marker="o",
-                 markersize=3,
-                 label=label,
-                 alpha=0.8,
-                 )
+        plt.plot(
+            x,
+            y,
+            marker="o",
+            markersize=3,
+            label=label,
+            alpha=0.8,
+        )
 
         if crosscheck_dfs:
             for df, name in zip(crosscheck_dfs, crosscheck_names):
@@ -420,7 +493,7 @@ class grb:
                     label=name,
                     color="orange",
                 )
-                
+
         # log x and y axis
         if logy:
             plt.yscale("log")
@@ -434,7 +507,11 @@ class grb:
         else:
             x_label = "Duration [s]"
 
-        plt.title(f"grbsens {self.params['src_name']} {self.params['irf']}", fontsize=15, family="monospace")
+        plt.title(
+            f"grbsens {self.params['src_name']} {self.params['irf']}",
+            fontsize=15,
+            family="monospace",
+        )
         plt.xlabel(x_label, size=15)
         plt.ylabel(y_label, size=15)
         plt.legend(ncol=2, fancybox=True, shadow=True)

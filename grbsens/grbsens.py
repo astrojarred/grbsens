@@ -5,7 +5,7 @@ import pandas as pd
 import numbers
 from matplotlib import pyplot as plt
 import multiprocessing as mp
-from tqdm.auto import tqdm
+from tqdm import tqdm
 from pathlib import Path
 
 import cscripts

@@ -1,14 +1,14 @@
-import os
-
-import numpy as np
-import pandas as pd
-import numbers
-from matplotlib import pyplot as plt
 import multiprocessing as mp
-from tqdm import tqdm
+import numbers
+import os
 from pathlib import Path
 
 import cscripts
+import numpy as np
+import pandas as pd
+from astropy.io import fits
+from matplotlib import pyplot as plt
+from tqdm import tqdm
 
 
 class grb:
@@ -229,7 +229,7 @@ class grb:
 
         outfile = (
             f"{cwd}/cssens_outputs/grbsens-{self.params['sigma']}"
-            f"sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
+            f"sigma_obstime-{duration}_irf-{self.params['irf']}.fits"
         )
         logfile = (
             f"{cwd}/cssens_logs/grbsens-{self.params['sigma']}"
@@ -280,10 +280,15 @@ class grb:
             print(f"Done with job #{job_number}, duration={duration}s\n")
 
     @staticmethod
-    def _results_to_df(outfile, duration, job_number, logfile):
+    def _results_to_df(outfile, duration, job_number, logfile, file_format="fits"):
         """Format results of _calculate_sensitivity into a pandas DataFrame."""
         # import results into a dataframe
-        results = pd.read_csv(outfile)
+        if file_format == "csv":
+            results = pd.read_csv(outfile)
+        else:
+            with fits.open(outfile) as f:
+                results = pd.DataFrame(f[1].data)
+                f.close()
 
         # add duration and job number as a column
         results["duration"] = [duration]
@@ -320,10 +325,10 @@ class grb:
         f["Obs time"] = f.index
 
         # Select which columns to print
-        f = f[["Obs time", "crab_flux", "photon_flux", "energy_flux", "sensitivity"]]
+        f = f[["Obs time", "FLUX_CRAB", "FLUX_PHOTON", "FLUX_ENERGY", "SENSITIVITY"]]
 
         # round outputs to 6 decimal places in scientific notation
-        for c in ["crab_flux", "photon_flux", "energy_flux", "sensitivity"]:
+        for c in ["FLUX_CRAB", "FLUX_PHOTON", "FLUX_ENERGY", "SENSITIVITY"]:
             f[c] = np.array([f"{i:.6e}" for i in f[c]])
 
         # space out observations times

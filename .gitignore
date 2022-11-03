@@ -1,3 +1,7 @@
+/fix_fits
+/IRFs*
+grbsens-output/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

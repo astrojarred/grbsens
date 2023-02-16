@@ -33,7 +33,7 @@ class grb:
         rad=2.25,
         caldb="prod2",
         src_name="GRB",
-        version=2,
+        version=1,
     ):
         """Initialize class. TODO: add parameters."""
         self.input_model = input_model

@@ -1,14 +1,14 @@
-import os
-
-import numpy as np
-import pandas as pd
-import numbers
-from matplotlib import pyplot as plt
 import multiprocessing as mp
-from tqdm import tqdm
+import numbers
+import os
 from pathlib import Path
 
 import cscripts
+import numpy as np
+import pandas as pd
+from astropy.io import fits
+from matplotlib import pyplot as plt
+from tqdm import tqdm
 
 
 class grb:
@@ -33,6 +33,7 @@ class grb:
         rad=2.25,
         caldb="prod2",
         src_name="GRB",
+        version=1,
     ):
         """Initialize class. TODO: add parameters."""
         self.input_model = input_model
@@ -55,12 +56,16 @@ class grb:
             "rad": rad,
             "caldb": caldb,
             "src_name": src_name,
+            "version": version,
         }
 
         # initialize results dictionary and output
         self.results = {}
         self.output = None
         self.std_output_df = None
+        
+        # set ctools version
+        self.version = version
 
         # check inputs
         self._check_inputs()
@@ -227,63 +232,106 @@ class grb:
         # create cssens object
         sen = cscripts.cssens()
 
-        outfile = (
-            f"{cwd}/cssens_outputs/grbsens-{self.params['sigma']}"
-            f"sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
-        )
+        if self.version == 1:
+            outfile = (
+                f"{cwd}/cssens_outputs/grbsens-{self.params['sigma']}"
+                f"sigma_obstime-{duration}_irf-{self.params['irf']}.txt"
+            )
+        else:
+            outfile = (
+                f"{cwd}/cssens_outputs/grbsens-{self.params['sigma']}"
+                f"sigma_obstime-{duration}_irf-{self.params['irf']}.fits"
+            )
+
         logfile = (
             f"{cwd}/cssens_logs/grbsens-{self.params['sigma']}"
             f"sigma_obstime-{duration}_irf-{self.params['irf']}.log"
         )
 
-        # run cssens
-        if not load_results or not Path(outfile).is_file():
-            # load input model
-            sen["inmodel"] = self.input_model
+        try_number = 1
+        max_tries = 2
+        completed = False
+        last_error = ""
 
-            # set parameters that change each loop
-            sen["duration"] = duration
-            sen["outfile"] = outfile
-            sen["logfile"] = logfile
+        while not completed and try_number <= max_tries:
 
-            # set global parameters
-            sen["srcname"] = self.params["src_name"]
-            sen["caldb"] = self.params["caldb"]
-            sen["irf"] = self.params["irf"]
-            sen["rad"] = self.params["rad"]
-            sen["emin"] = self.params["emin"]
-            sen["emax"] = self.params["emax"]
-            sen["type"] = self.params["sens_type"]
-            sen["sigma"] = self.params["sigma"]
-            sen["bins"] = self.params["bins"]
-            sen["binsz"] = self.params["binsz"]
-            sen["offset"] = self.params["offset"]
-            sen["npix"] = self.params["npix"]
+            try:
+                # run cssens
+                if not load_results or not Path(outfile).is_file():
+                    # load input model
+                    sen["inmodel"] = self.input_model
 
-            # set number of cores used for energy bins
-            sen["nthreads"] = nthreads
-            # set chatter to max
-            sen["chatter"] = 4
+                    # set parameters that change each loop
+                    sen["duration"] = duration
+                    sen["outfile"] = outfile
+                    sen["logfile"] = logfile
 
-            sen.execute()
+                    # set global parameters
+                    sen["srcname"] = self.params["src_name"]
+                    sen["caldb"] = self.params["caldb"]
+                    sen["irf"] = self.params["irf"]
+                    sen["rad"] = self.params["rad"]
+                    sen["emin"] = self.params["emin"]
+                    sen["emax"] = self.params["emax"]
+                    sen["type"] = self.params["sens_type"]
+                    sen["sigma"] = self.params["sigma"]
+                    sen["bins"] = self.params["bins"]
+                    sen["binsz"] = self.params["binsz"]
+                    sen["offset"] = self.params["offset"]
+                    sen["npix"] = self.params["npix"]
 
-        # format results into pandas DataFrame
-        results = self._results_to_df(outfile, duration, job_number, logfile)
+                    # set number of cores used for energy bins
+                    sen["nthreads"] = nthreads
+                    # set chatter to max
+                    sen["chatter"] = 4
 
-        # add output pandas df to results dictionary
-        self._save_results(
-            results=results, job_number=job_number, parallel_results=parallel_results
+                    print(
+                        f"{try_number}. Running `cssens` with irf {self.params['irf']} for {duration}s from {self.params['emin']} to {self.params['emax']} TeV."
+                    )
+
+                    sen.execute()
+
+                # format results into pandas DataFrame
+                results = self._results_to_df(outfile, duration, job_number, logfile, self.version)
+
+                # add output pandas df to results dictionary
+                self._save_results(
+                    results=results,
+                    job_number=job_number,
+                    parallel_results=parallel_results,
+                )
+
+                if verbose:
+                    # print success message
+                    print(f"Done with job #{job_number}, duration={duration}s\n")
+
+                completed = True
+                return
+
+            except Exception as e:
+                print(self.params["irf"])
+                print(e)
+                try_number += 1
+                last_error += "\n" + str(e)
+
+        print(f"There was an error with the following job after {max_tries} tries:")
+        print(
+            f"IRF = {self.params['irf']} for {duration}s from {self.params['emin']} to {self.params['emax']} TeV. Params:"
         )
-
-        if verbose:
-            # print success message
-            print(f"Done with job #{job_number}, duration={duration}s\n")
+        print(sen)
+        print(last_error)
 
     @staticmethod
-    def _results_to_df(outfile, duration, job_number, logfile):
+    def _results_to_df(outfile, duration, job_number, logfile, version=2):
         """Format results of _calculate_sensitivity into a pandas DataFrame."""
         # import results into a dataframe
-        results = pd.read_csv(outfile)
+
+        if version == 1:
+            results = pd.read_csv(outfile)
+        else:
+            with fits.open(outfile) as f:
+                results = pd.DataFrame(f[1].data)
+                f.close()
 
         # add duration and job number as a column
         results["duration"] = [duration]
@@ -319,12 +367,20 @@ class grb:
         # Create a new column called Obs time
         f["Obs time"] = f.index
 
-        # Select which columns to print
-        f = f[["Obs time", "crab_flux", "photon_flux", "energy_flux", "sensitivity"]]
-
+        # Select which columns to print and
         # round outputs to 6 decimal places in scientific notation
-        for c in ["crab_flux", "photon_flux", "energy_flux", "sensitivity"]:
-            f[c] = np.array([f"{i:.6e}" for i in f[c]])
+        if self.version == 1:
+            f = f[
+                ["Obs time", "crab_flux", "photon_flux", "energy_flux", "sensitivity"]
+            ]
+            for c in ["crab_flux", "photon_flux", "energy_flux", "sensitivity"]:
+                f[c] = np.array([f"{i:.6e}" for i in f[c]])
+        else:
+            f = f[
+                ["Obs time", "FLUX_CRAB", "FLUX_PHOTON", "FLUX_ENERGY", "SENSITIVITY"]
+            ]
+            for c in ["FLUX_CRAB", "FLUX_PHOTON", "FLUX_ENERGY", "SENSITIVITY"]:
+                f[c] = np.array([f"{i:.6e}" for i in f[c]])
 
         # space out observations times
         f["Obs time"] = np.array([f"{i:<9}" for i in f["Obs time"]])
@@ -370,7 +426,7 @@ class grb:
             for job_number, duration in tqdm(
                 enumerate(self.times),
                 total=len(self.times),
-                desc=f'{self.params["src_name"]}',
+                desc=f'{self.params["src_name"]} {self.params["irf"]}',
             ):
                 self._calculate_sensitivity(
                     job_number=job_number,
@@ -399,7 +455,8 @@ class grb:
 
             # initialize progress bar
             progress_bar = tqdm(
-                total=len(self.times), desc=f'{self.params["src_name"]}'
+                total=len(self.times),
+                desc=f'{self.params["src_name"]} {self.params["irf"]}',
             )
 
             # run loop
